@@ -16,4 +16,4 @@ int cities_choice(void);
 void printURL(int a);
 int selection(char a);
 
-#endif // WEATHER_H
+#endif

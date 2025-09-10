@@ -20,21 +20,24 @@ city cities[] = {
     {16, "Kiruna",      67.8558, 20.2253}
 };
 
-const int NUMBER_OF_CITIES = sizeof(cities) / sizeof(cities[0]); // Sets NUMBER_OF_CITIES
+/* Sets NUMBER_OF_CITIES */
+const int NUMBER_OF_CITIES = sizeof(cities) / sizeof(cities[0]); 
 
-// Shows list of available cities
+ /* Shows list of available cities */
 void cities_showList()
-{
-    for (int i=0; i<NUMBER_OF_CITIES; i++)
+{   
+    int i = 0;
+    for (i=0; i<NUMBER_OF_CITIES; i++)
     {
         printf("[%d] %s\n", cities[i].list, cities[i].name);
     }
 }
 
-// Takes city choice as input and returns list number
+/* Takes city choice as input and returns list number */
 int cities_choice()
 {   
     int a = 0;
+    int i = 0;
     
     scanf("%d", &a);
     while (a < 1 || a > NUMBER_OF_CITIES)
@@ -43,7 +46,7 @@ int cities_choice()
         scanf("%d", &a);
     }
 
-    for (int i=0; i<NUMBER_OF_CITIES; i++)
+    for (i=0; i<NUMBER_OF_CITIES; i++)
     {
         if (a == cities[i].list)
         {
@@ -65,7 +68,7 @@ void printURL(int a)
     printf("_____________________________________________________________________________________________________\n\n");
 }
 
-// Returns 0 if char is Y/y and 1 if N/n
+/* Returns 0 if char is Y/y and 1 if N/n */
 int selection(char a)
 {
     if  (a == 'Y' || a == 'y')
@@ -78,5 +81,5 @@ int selection(char a)
     }
     else printf("Invalid input. Enter Y/N: \n"); 
     scanf(" %c", &a);
-    return selection(a); // Recursive in case of invalid input
+    return selection(a); /* Recursive in case of invalid input */
 }
