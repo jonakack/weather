@@ -1,12 +1,24 @@
-main: main.o cities.o
-	gcc main.o cities.o -o main
+CC := gcc
+CFLAGS := -std=c90 -Wall -Wextra
+SRC := $(wildcard *.c)
+OBJ := $(SRC:.c=.o)
+DEP := $(OBJ:.o=.d)
+BIN := main
 
-main.o: main.c weather.h
-	gcc -c main.c
+all: $(BIN)
 
-cities.o: cities.c weather.h  
-	gcc -c cities.c
+$(BIN): $(OBJ)
+	$(CC) $(CFLAGS) $^ -o $@
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+run: $(BIN)
+	./$(BIN)
 
 clean:
-	@echo "Removing everything except source files..."
-	rm *.o main
+	$(RM) $(BIN) $(OBJ) $(DEP)
+
+-include $(DEP)
+
+.PHONY: all run clean
