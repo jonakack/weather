@@ -39,11 +39,17 @@ int cities_choice()
     int a = 0;
     int i = 0;
     
-    scanf("%d", &a);
-    while (a < 1 || a > NUMBER_OF_CITIES)
+    while (1)
     {
-        printf("Invalid choice. Try again. \n");
-        scanf("%d", &a);
+        if (scanf("%d", &a) == 1 && a >= 1 && a <= NUMBER_OF_CITIES)
+        {
+            break;
+        }
+        else
+        {
+            printf("Invalid choice. Try again. \n");
+            while (getchar() != '\n'); /* Clear input buffer */
+        }
     }
 
     for (i=0; i<NUMBER_OF_CITIES; i++)
