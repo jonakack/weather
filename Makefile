@@ -1,17 +1,19 @@
 CC := gcc
-CFLAGS := -std=c90 -Wall -Wextra
-SRC := $(wildcard *.c)
-OBJ := $(SRC:.c=.o)
+INCLUDE := -I/mingw64/include
+LIB := -L/mingw64/lib
+CFLAGS := -std=c90 -Wall -Wextra $(INCLUDE)
+SRC := $(wildcard src/*.c)
+OBJ := $(patsubst src/%.c,build/%.o,$(SRC))
 DEP := $(OBJ:.o=.d)
-BIN := main
+BIN := build/main
 
 all: $(BIN)
 
 $(BIN): $(OBJ)
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@ $(LIB) -lcurl
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+build/%.o: src/%.c
+	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@ -MF $(basename $@).d
 
 run: $(BIN)
 	./$(BIN)

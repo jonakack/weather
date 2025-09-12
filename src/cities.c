@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "weather.h"
+#include "../include/weather.h"
 
 city cities[] = {
     {1, "Stockholm",    59.3293, 18.0686},
