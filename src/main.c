@@ -1,10 +1,13 @@
 #include <stdio.h>
-#include "../include/weather.h"
+#include <string.h>
 #include <curl/curl.h>
+#include "../include/weather.h"
+#include "../include/http.h"
 
 int main()
 {
     char c;
+    char url[256];
 
     do 
     {   
@@ -15,9 +18,11 @@ int main()
 
         int city = cities_choice();
 
-        printURL(city);
+        strcpy(url, makeURL(city));
+
+        http_init(url);
         
-        printf("Do you want to select another city?\nEnter Y/N:\n");
+        printf("\n\nDo you want to select another city?\nEnter Y/N:\n");
         scanf(" %c", &c);
         
     }   while (selection(c)==0);
