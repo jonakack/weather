@@ -6,7 +6,7 @@
 
 int main()
 {
-    char c;
+    char userResponse;
     char url[256];
 
     do 
@@ -23,9 +23,9 @@ int main()
         http_init(url);
         
         printf("\n\nDo you want to select another city?\nEnter Y/N:\n");
-        scanf(" %c", &c);
+        scanf(" %c", &userResponse);
         
-    }   while (selection(c)==0);
+    }   while (askYesNo(userResponse)==0);
 
     printf("Shutting down... Thank you for using WeatherApp!\n");
     return 0;

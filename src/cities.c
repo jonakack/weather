@@ -74,12 +74,12 @@ int cities_choice()
 
 
 /* Converts city number to correct URL */
-char *makeURL(int a)
+char *makeURL(int cityIndex)
 {
     static char url[256];
 
     sprintf (url, "https://api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f&current_weather=true", 
-            cities[a-1].latitude, cities[a-1].longitude);
+            cities[cityIndex-1].latitude, cities[cityIndex-1].longitude);
 
     return url;
 }
@@ -87,7 +87,7 @@ char *makeURL(int a)
 
 
 /* Returns 0 if char is Y/y and 1 if N/n */
-int selection(char a)
+int askYesNo(char a)
 {
     if  (a == 'Y' || a == 'y')
     {
@@ -99,5 +99,5 @@ int selection(char a)
     }
     else printf("Invalid input. Enter Y/N: \n"); 
     scanf(" %c", &a);
-    return selection(a); /* Recursive in case of invalid input */
+    return askYesNo(a); /* Recursive in case of invalid input */
 }

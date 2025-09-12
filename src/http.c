@@ -27,8 +27,3 @@ int http_init(const char *url)
     curl_easy_cleanup(curl);
     return 0;
 }
-
-void http_dispose(http* h)
-{
-    h->temp = false;
-}

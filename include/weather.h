@@ -14,6 +14,6 @@ extern const int NUMBER_OF_CITIES;
 void cities_showList(void);
 int cities_choice(void);
 char *makeURL(int a);
-int selection(char a);
+int askYesNo(char a);
 
 #endif
