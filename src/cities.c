@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <curl/curl.h>
 #include "../include/weather.h"
 
 city cities[] = {
@@ -20,8 +21,12 @@ city cities[] = {
     {16, "Kiruna",      67.8558, 20.2253}
 };
 
+
+
 /* Sets NUMBER_OF_CITIES */
 const int NUMBER_OF_CITIES = sizeof(cities) / sizeof(cities[0]); 
+
+
 
  /* Shows list of available cities */
 void cities_showList()
@@ -32,6 +37,8 @@ void cities_showList()
         printf("[%d] %s\n", cities[i].list, cities[i].name);
     }
 }
+
+
 
 /* Takes city choice as input and returns list number */
 int cities_choice()
@@ -57,25 +64,30 @@ int cities_choice()
         if (a == cities[i].list)
         {
             printf("_____________________________________________________________________________________________________\n");
-            printf("\nYou chose %s!\n", cities[i].name);
+            printf("\nYou chose %s!\n\n", cities[i].name);
             return a;
         }
     }
     return -1;
 }
 
-void printURL(int a)
-{
-    char url[256];
-    sprintf (url, "https://api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f&current_weather=true", 
-            cities[a-1].latitude, cities[a-1].longitude);
 
-    printf("URL: \"%s\"\r\n", url);
-    printf("_____________________________________________________________________________________________________\n\n");
+
+/* Converts city number to correct URL */
+char *makeURL(int cityIndex)
+{
+    static char url[256];
+
+    sprintf (url, "https://api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f&current_weather=true", 
+            cities[cityIndex-1].latitude, cities[cityIndex-1].longitude);
+
+    return url;
 }
 
+
+
 /* Returns 0 if char is Y/y and 1 if N/n */
-int selection(char a)
+int askYesNo(char a)
 {
     if  (a == 'Y' || a == 'y')
     {
@@ -87,5 +99,5 @@ int selection(char a)
     }
     else printf("Invalid input. Enter Y/N: \n"); 
     scanf(" %c", &a);
-    return selection(a); /* Recursive in case of invalid input */
+    return askYesNo(a); /* Recursive in case of invalid input */
 }
