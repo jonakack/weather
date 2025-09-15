@@ -1,7 +1,7 @@
 CC := gcc
 INCLUDE := -I/mingw64/include
 LIB := -L/mingw64/lib
-CFLAGS := -Wall -Wextra $(INCLUDE)
+CFLAGS := -std=c90 -Wall -Wextra $(INCLUDE)
 SRC := $(wildcard src/*.c)
 OBJ := $(patsubst src/%.c,build/%.o,$(SRC))
 DEP := $(OBJ:.o=.d)
