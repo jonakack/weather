@@ -19,8 +19,9 @@ void parse_weather_json(const char *json) {
         cJSON *time = cJSON_GetObjectItemCaseSensitive(weather, "time");
         cJSON *winddir = cJSON_GetObjectItemCaseSensitive(weather, "winddirection");
 
+        printf("What would you like to know? \n[1] Temperature \n[2] WindSpeed \n[3] Weather code \n[4] Time \n[5] Wind direction \n(n) To cancel\n");
+
         while (1) {
-            printf("What would you like to know? \n[1] Temperature \n[2] WindSpeed \n[3] Weather code \n[4] Time \n[5] Wind direction \n(n) To cancel\n");
             char line[16];
             if (!fgets(line, sizeof(line), stdin)) break;
             char choice = tolower(line[0]);

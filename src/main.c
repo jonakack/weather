@@ -25,9 +25,9 @@ int main()
         char *json_str = http_init(url);
         
         if (json_str) {
-                parse_weather_json(json_str); // anropa funktionen för att parsa JSON-datan
-                //printf("Data received:\n%s\n", json_str); // testa att skriva ut den hämtade JSON-datan !!!DEBUGGING!!!
-                free(json_str); // frigör minnet som allokerats för JSON-strängen
+                parse_weather_json(json_str); /* anropa funktionen för att parsa JSON-datan */
+                /*printf("Data received:\n%s\n", json_str); // testa att skriva ut den hämtade JSON-datan !!!DEBUGGING!!! */
+                free(json_str); /* frigör minnet som allokerats för JSON-strängen */
         } else 
             {
             fprintf(stderr, "Failed to get data from URL\n");
