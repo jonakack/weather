@@ -38,8 +38,6 @@ void cities_showList()
     }
 }
 
-
-
 /* Takes city choice as input and returns list number */
 int cities_choice()
 {   
