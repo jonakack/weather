@@ -33,7 +33,7 @@ int main()
             fprintf(stderr, "Failed to get data from URL\n");
             }
 
-        printf("\n\nDo you want to select another city?\nEnter Y/N:\n");
+        printf("\nDo you want to select another city?\nEnter Y/N:\n");
         scanf(" %c", &userResponse);
         
     }   while (askYesNo(userResponse)==0);
