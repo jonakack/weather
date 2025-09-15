@@ -17,8 +17,9 @@ city cities[] = {
     {12, "Gävle",       60.6749, 17.1413},
     {13, "Sundsvall",   62.3908, 17.3069},
     {14, "Umeå",        63.8258, 20.2630},
-    {15, "Luleå",       65.5848, 22.1567},
-    {16, "Kiruna",      67.8558, 20.2253}
+    {15, "Skellefteå",  64.7507, 20.9528},
+    {16, "Luleå",       65.5848, 22.1567},
+    {17, "Kiruna",      67.8558, 20.2253}
 };
 
 
@@ -53,7 +54,6 @@ int cities_choice()
         else
         {
             printf("Invalid choice. Try again. \n");
-            while (getchar() != '\n'); /* Clear input buffer */
         }
     }
 
