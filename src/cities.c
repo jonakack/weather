@@ -80,7 +80,7 @@ char *makeURL(int cityIndex)
 
     sprintf (url, "https://api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f&current_weather=true", 
             cities[cityIndex-1].latitude, cities[cityIndex-1].longitude);
-
+    while (getchar() != '\n'); // clear buffer    
     return url;
 }
 

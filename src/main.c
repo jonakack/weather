@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <curl/curl.h>
+#include <stdlib.h>
+#include "../include/json.h"
 #include "../include/weather.h"
 #include "../include/http.h"
 
@@ -20,8 +22,17 @@ int main()
 
         strcpy(url, makeURL(city));
 
-        http_init(url);
+        char *json_str = http_init(url);
         
+        if (json_str) {
+                parse_weather_json(json_str); // anropa funktionen för att parsa JSON-datan
+                //printf("Data received:\n%s\n", json_str); // testa att skriva ut den hämtade JSON-datan !!!DEBUGGING!!!
+                free(json_str); // frigör minnet som allokerats för JSON-strängen
+        } else 
+            {
+            fprintf(stderr, "Failed to get data from URL\n");
+            }
+
         printf("\n\nDo you want to select another city?\nEnter Y/N:\n");
         scanf(" %c", &userResponse);
         
