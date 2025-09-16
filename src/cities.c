@@ -59,6 +59,7 @@ int cities_choice()
         {
             printf("_____________________________________________________________________________________________________\n");
             printf("\nYou chose %s!\n\n", cities[i].name);
+            while (getchar() != '\n');
             return a;
         }
     }

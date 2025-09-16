@@ -6,6 +6,10 @@
 #define MAX_URL_LENGTH 256
 #define MAX_INPUT_LINE_LENGTH 16
 
+/* Response constants for user input validation */
+#define YES_RESPONSE 0
+#define NO_RESPONSE 1
+
 typedef struct
 {
     int list;
