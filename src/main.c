@@ -15,19 +15,21 @@ int main()
     {   
         printf ("-----------------WeatherApp-----------------\n"
                 "Select a city by entering the city's number: \n");
+        
+        build_citystruct();
 
         cities_showList();
 
         int city = cities_choice();
 
         strcpy(url, makeURL(city));
+        free(cities); // Now we free the allocated memory for cities, since we no longer need it
 
         char *json_str = http_init(url);
-        
         if (json_str) {
-                parse_weather_json(json_str); /* anropa funktionen för att parsa JSON-datan */
-                /*printf("Data received:\n%s\n", json_str); // testa att skriva ut den hämtade JSON-datan !!!DEBUGGING!!! */
-                free(json_str); /* frigör minnet som allokerats för JSON-strängen */
+                //printf("Data received:\n%s\n", json_str); // testa att skriva ut den hämtade JSON-datan !!!DEBUGGING!!!
+                parse_weather_json(json_str); // anropa funktionen för att parsa JSON-datan 
+                free(json_str); // frigör minnet som allokerats för JSON-strängen
         } else 
             {
             fprintf(stderr, "Failed to get data from URL\n");

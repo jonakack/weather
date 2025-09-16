@@ -1,65 +1,92 @@
 #include <stdio.h>
 #include <curl/curl.h>
+#include <stdlib.h>
+#include <string.h>
 #include "../include/weather.h"
 
-city cities[] = {
-    {1, "Stockholm",    59.3293, 18.0686},
-    {2, "Göteborg",     57.7089, 11.9746},
-    {3, "Malmö",        55.6050, 13.0038},
-    {4, "Uppsala",      59.8586, 17.6389},
-    {5, "Västerås",     59.6099, 16.5448},
-    {6, "Örebro",       59.2741, 15.2066},
-    {7, "Linköping",    58.4109, 15.6216},
-    {8, "Helsingborg",  56.0465, 12.6945},
-    {9,  "Jönköping",   57.7815, 14.1562},
-    {10, "Norrköping",  58.5877, 16.1924},
-    {11, "Lund",        55.7047, 13.1910},
-    {12, "Gävle",       60.6749, 17.1413},
-    {13, "Sundsvall",   62.3908, 17.3069},
-    {14, "Umeå",        63.8258, 20.2630},
-    {15, "Skellefteå",  64.7507, 20.9528},
-    {16, "Luleå",       65.5848, 22.1567},
-    {17, "Kiruna",      67.8558, 20.2253}
-};
+const char *cities_str = "Stockholm:59.3293:18.0686\n" "Göteborg:57.7089:11.9746\n" 
+    "Malmö:55.6050:13.0038\n" "Uppsala:59.8586:17.6389\n" "Västerås:59.6099:16.5448\n" 
+    "Örebro:59.2741:15.2066\n" "Linköping:58.4109:15.6216\n" "Helsingborg:56.0465:12.6945\n" 
+    "Jönköping:57.7815:14.1562\n" "Norrköping:58.5877:16.1924\n" "Lund:55.7047:13.1910\n" 
+    "Gävle:60.6749:17.1413\n" "Sundsvall:62.3908:17.3069\n" "Umeå:63.8258:20.2630\n" 
+    "Luleå:65.5848:22.1567\n" "Kiruna:67.8558:20.2253\n" "Skellefteå:64.7506:20.9528\n";
+
+// Global variables used in multiple functions in cities.c
+struct city *cities = NULL;
+int city_count;
 
 
+// Instead of manually reformatting the string "cities_str" into a struct
+// This function will take the string and create a struct in the right format
+// This is to account for further expansion: what if the list contains 10 000 cities?
+void build_citystruct() {
 
-/* Sets NUMBER_OF_CITIES */
-const int NUMBER_OF_CITIES = sizeof(cities) / sizeof(cities[0]); 
+    city_count = 0;
+    // Count how many cities are in the string
+    for (const char *p = cities_str; *p;) { // Create a pointer *p at the beginning of cities_str; *p -> Looks at the current character
+        if (*p == '\n') city_count++;       // if (*p == '\n') city_count++ -> if current character "*p" is looking at "\n" increase city_count by 1. Since each city ends with \n this is fine
+        p++;                                // Move the pointer to the next character. This for loop will end when *p is currently looking at \0 aka NULL terminator
+    }                                          
 
+    // Allocate memory for the city struct array
+    cities = malloc(city_count * sizeof(struct city));
+    if (cities == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return;
+    }
+    
+    // Create a buffer to copy "cities_str" and also allocate enough memory for it
+    // Strtok modifies the original string, we need a buffer because cities_str is a const char == can't be modified
+    char *buffer = malloc(strlen(cities_str) + 1);  // Declare a pointer "buffer" that can point to a char, and also allocate enough bytes on the heap for it to copy cities_str
+    if (buffer == NULL) {                           // ^ +1 is to account for \0
+        printf("Failed to allocate memory for buffer\n");
+        free(cities);
+        exit(1);
+    }
+    strcpy(buffer, cities_str);                     // Copy the contents from cities_str into buffer
 
+    // Parse the string and fill the struct array "cities"
+    char *line = strtok(buffer, "\n");
+    int index = 0;
+    while (line && index < city_count) {
+        sscanf(line, "%49[^:]:%lf:%lf", 
+            cities[index].name, 
+            &cities[index].latitude, 
+            &cities[index].longitude);
+        index++;
+        line = strtok(NULL, "\n");
+    }
+    free(buffer);   // Free the allocated memory for buffer
+    // We don't free the allocated memory for cities yet, we still need it in other functions
+}
 
  /* Shows list of available cities */
-void cities_showList()
-{   
+void cities_showList() {   
     int i = 0;
-    for (i=0; i<NUMBER_OF_CITIES; i++)
+    for (i=0; i<city_count; i++)
     {
-        printf("[%d] %s\n", cities[i].list, cities[i].name);
+        printf("[%d] %s\n", i+1, cities[i].name);
     }
 }
 
 /* Takes city choice as input and returns list number */
-int cities_choice()
-{   
+int cities_choice() {   
     int a = 0;
     int i = 0;
     
     while (1)
     {
-        if (scanf("%d", &a) == 1 && a >= 1 && a <= NUMBER_OF_CITIES)
-        {
+        if (scanf("%d", &a) == 1 && a >= 1 && a <= city_count) {
             break;
         }
-        else
-        {
+        else {
             printf("Invalid choice. Try again. \n");
         }
     }
 
-    for (i=0; i<NUMBER_OF_CITIES; i++)
+    for (i=0; i<city_count; i++)
     {
-        if (a == cities[i].list)
+        if (a == i+1) // Changed from a == cities[i].list to a == i+1 because I removed the list variable from the struct
         {
             printf("_____________________________________________________________________________________________________\n");
             printf("\nYou chose %s!\n\n", cities[i].name);
@@ -78,7 +105,8 @@ char *makeURL(int cityIndex)
 
     sprintf (url, "https://api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f&current_weather=true", 
             cities[cityIndex-1].latitude, cities[cityIndex-1].longitude);
-    while (getchar() != '\n'); // clear buffer    
+    while (getchar() != '\n'); // clear the input buffer so \n doesn't follow into the next user input
+    //printf("%s\n", url);  // !!!DEBUGGING!!!
     return url;
 }
 

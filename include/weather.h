@@ -1,16 +1,19 @@
 #ifndef WEATHER_H
 #define WEATHER_H
 
-typedef struct
-{
-    int list;
-    char name[16];
+struct city {
+    char name[50];
     double latitude;
     double longitude;
-} city;
+};
 
-extern const int NUMBER_OF_CITIES;
 
+// Initialize global variables used in multiple functions in cities.c
+extern struct city *cities;
+extern int city_count;
+
+// Initialize functions used in main.c
+void build_citystruct(void);
 void cities_showList(void);
 int cities_choice(void);
 char *makeURL(int a);
