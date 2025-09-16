@@ -21,12 +21,8 @@ city cities[] = {
     {16, "Kiruna",      67.8558, 20.2253}
 };
 
-
-
 /* Sets NUMBER_OF_CITIES */
 const int NUMBER_OF_CITIES = sizeof(cities) / sizeof(cities[0]); 
-
-
 
  /* Shows list of available cities */
 void cities_showList()
@@ -40,10 +36,10 @@ void cities_showList()
 
 /* Takes city choice as input and returns list number */
 int cities_choice()
-{   
+{
     int a = 0;
-    int i = 0;
-    
+    /* Removed unused variable 'i' - now declared in for loop scope where it's actually used */
+
     while (1)
     {
         if (scanf("%d", &a) == 1 && a >= 1 && a <= NUMBER_OF_CITIES)
@@ -57,7 +53,7 @@ int cities_choice()
         }
     }
 
-    for (i=0; i<NUMBER_OF_CITIES; i++)
+    for (int i = 0; i < NUMBER_OF_CITIES; i++)
     {
         if (a == cities[i].list)
         {
@@ -69,20 +65,16 @@ int cities_choice()
     return -1;
 }
 
-
-
 /* Converts city number to correct URL */
 char *makeURL(int cityIndex)
 {
-    static char url[256];
+    static char url[MAX_URL_LENGTH]; /* Using defined constant instead of magic number */
 
-    sprintf (url, "https://api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f&current_weather=true", 
+    sprintf (url, "https://api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f&current_weather=true",
             cities[cityIndex-1].latitude, cities[cityIndex-1].longitude);
-    while (getchar() != '\n'); // clear buffer    
+    /* Removed buffer clearing from URL generation function - this should be handled by input functions */
     return url;
 }
-
-
 
 /* Returns 0 if char is Y/y and 1 if N/n */
 int askYesNo(char a)

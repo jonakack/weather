@@ -9,7 +9,7 @@
 int main()
 {
     char userResponse;
-    char url[256];
+    char url[MAX_URL_LENGTH]; /* Using defined constant instead of magic number */
 
     do 
     {   
