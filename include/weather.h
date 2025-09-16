@@ -16,7 +16,7 @@ extern int city_count;
 void build_citystruct(void);
 void cities_showList(void);
 int cities_choice(void);
-char *makeURL(int a);
+void makeURL(int cityIndex, char *url);
 int askYesNo(char a);
 
 #endif

@@ -17,8 +17,8 @@ int city_count;
 
 
 // Instead of manually reformatting the string "cities_str" into a struct
-// This function will take the string and create a struct in the right format
-// This is to account for further expansion: what if the list contains 10 000 cities?
+// this function will take the string and create a struct array in the right format
+// this is to account for further expansion: what if the list contains 10 000 cities?
 void build_citystruct() {
 
     city_count = 0;
@@ -29,14 +29,14 @@ void build_citystruct() {
     }                                          
 
     // Allocate memory for the city struct array
-    cities = malloc(city_count * sizeof(struct city));
+    cities = malloc(city_count * sizeof(struct city)); // this allocated memory is currently being freed in main.c after we are done using it
     if (cities == NULL) {
         fprintf(stderr, "Memory allocation failed\n");
         return;
     }
     
     // Create a buffer to copy "cities_str" and also allocate enough memory for it
-    // Strtok modifies the original string, we need a buffer because cities_str is a const char == can't be modified
+    // strtok modifies the original string, we need a buffer because cities_str is a const char == can't be modified
     char *buffer = malloc(strlen(cities_str) + 1);  // Declare a pointer "buffer" that can point to a char, and also allocate enough bytes on the heap for it to copy cities_str
     if (buffer == NULL) {                           // ^ +1 is to account for \0
         printf("Failed to allocate memory for buffer\n");
@@ -45,16 +45,16 @@ void build_citystruct() {
     }
     strcpy(buffer, cities_str);                     // Copy the contents from cities_str into buffer
 
-    // Parse the string and fill the struct array "cities"
-    char *line = strtok(buffer, "\n");
+    // Parse the string and build the struct array "cities"
+    char *line = strtok(buffer, "\n");      // strtok splits the string into tokens based on the delimiter "\n"
     int index = 0;
-    while (line && index < city_count) {
-        sscanf(line, "%49[^:]:%lf:%lf", 
-            cities[index].name, 
+    while (line && index < city_count) {    // while line is not NULL and index is less than city_count
+        sscanf(line, "%49[^:]:%lf:%lf",     // %49[^:] means read up to 49 characters or until ':' is encountered.
+            cities[index].name,
             &cities[index].latitude, 
             &cities[index].longitude);
         index++;
-        line = strtok(NULL, "\n");
+        line = strtok(NULL, "\n");          
     }
     free(buffer);   // Free the allocated memory for buffer
     // We don't free the allocated memory for cities yet, we still need it in other functions
@@ -74,8 +74,7 @@ int cities_choice() {
     int a = 0;
     int i = 0;
     
-    while (1)
-    {
+    while (1) {
         if (scanf("%d", &a) == 1 && a >= 1 && a <= city_count) {
             break;
         }
@@ -90,6 +89,7 @@ int cities_choice() {
         {
             printf("_____________________________________________________________________________________________________\n");
             printf("\nYou chose %s!\n\n", cities[i].name);
+            
             return a;
         }
     }
@@ -99,15 +99,13 @@ int cities_choice() {
 
 
 /* Converts city number to correct URL */
-char *makeURL(int cityIndex)
-{
-    static char url[256];
+void makeURL(int cityIndex, char *url) {   // Changed function signature to take char *url as parameter to write directly into it
 
     sprintf (url, "https://api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f&current_weather=true", 
-            cities[cityIndex-1].latitude, cities[cityIndex-1].longitude);
+            cities[cityIndex-1].latitude, 
+            cities[cityIndex-1].longitude);
     while (getchar() != '\n'); // clear the input buffer so \n doesn't follow into the next user input
     //printf("%s\n", url);  // !!!DEBUGGING!!!
-    return url;
 }
 
 
@@ -115,12 +113,10 @@ char *makeURL(int cityIndex)
 /* Returns 0 if char is Y/y and 1 if N/n */
 int askYesNo(char a)
 {
-    if  (a == 'Y' || a == 'y')
-    {
+    if  (a == 'Y' || a == 'y') {
         return 0;
     }  
-    else if (a == 'N' || a == 'n')
-    {
+    else if (a == 'N' || a == 'n'){
         return 1;
     }
     else printf("Invalid input. Enter Y/N: \n"); 
