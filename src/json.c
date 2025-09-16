@@ -2,6 +2,7 @@
 #include <cjson/cJSON.h>
 #include <ctype.h>
 #include "../include/json.h"
+#include "../include/weather.h" /* Added to access MAX_INPUT_LINE_LENGTH constant */
 
 
 void parse_weather_json(const char *json) {
@@ -22,7 +23,7 @@ void parse_weather_json(const char *json) {
         printf("What would you like to know? \n[1] Temperature \n[2] WindSpeed \n[3] Weather code \n[4] Time \n[5] Wind direction \n(n) To cancel\n");
 
         while (1) {
-            char line[16];
+            char line[MAX_INPUT_LINE_LENGTH]; /* using defined constant instead of magic number */
             if (!fgets(line, sizeof(line), stdin)) break;
             char choice = tolower(line[0]);
             if (choice == '1' && cJSON_IsNumber(temp))
@@ -38,9 +39,8 @@ void parse_weather_json(const char *json) {
             else if (choice == 'n')
                 break;
             else
-                printf("Ogiltigt val eller data saknas.\n");
+                printf("Invalid choice or data missing.\n"); /* translated Swedish error message to English for consistency */
         }
-        
     }
 
     cJSON_Delete(root);
