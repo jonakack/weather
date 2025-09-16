@@ -18,8 +18,7 @@ typedef struct
     double longitude;
 } city;
 
-extern const int NUMBER_OF_CITIES;
-
+int get_number_of_cities(void);
 void cities_showList(void);
 int cities_choice(void);
 char *makeURL(int a);

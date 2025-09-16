@@ -22,13 +22,13 @@ city cities[] = {
 };
 
 /* Sets NUMBER_OF_CITIES */
-const int NUMBER_OF_CITIES = sizeof(cities) / sizeof(cities[0]); 
+int get_number_of_cities(void) { return sizeof(cities) / sizeof(cities[0]); }
 
  /* Shows list of available cities */
 void cities_showList()
 {   
     int i = 0;
-    for (i=0; i<NUMBER_OF_CITIES; i++)
+    for (i=0; i<get_number_of_cities(); i++)
     {
         printf("[%d] %s\n", cities[i].list, cities[i].name);
     }
@@ -42,7 +42,7 @@ int cities_choice()
 
     while (1)
     {
-        if (scanf("%d", &a) == 1 && a >= 1 && a <= NUMBER_OF_CITIES)
+        if (scanf("%d", &a) == 1 && a >= 1 && a <= get_number_of_cities())
         {
             break;
         }
@@ -53,7 +53,7 @@ int cities_choice()
         }
     }
 
-    for (int i = 0; i < NUMBER_OF_CITIES; i++)
+    for (int i = 0; i < get_number_of_cities(); i++)
     {
         if (a == cities[i].list)
         {
