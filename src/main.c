@@ -20,7 +20,14 @@ int main()
 
         int city = cities_choice();
 
-        strcpy(url, makeURL(city));
+        /* validates makeURL return and use safe string copying to prevent buffer overflow */
+        const char *temp_url = makeURL(city);
+        if (temp_url == NULL) {
+            fprintf(stderr, "Error: Could not generate URL for city\n");
+            continue;
+        }
+        strncpy(url, temp_url, MAX_URL_LENGTH - 1);
+        url[MAX_URL_LENGTH - 1] = '\0'; /* Ensure null-termination for safety */
 
         char *json_str = http_init(url);
         
@@ -34,9 +41,16 @@ int main()
             }
 
         printf("\n\nDo you want to select another city?\nEnter Y/N:\n");
-        scanf(" %c", &userResponse);
+        /* Enhanced error handling for user input to prevent input stream corruption */
+        if (scanf(" %c", &userResponse) != 1) {
+            fprintf(stderr, "Error reading user input\n");
+            /* Clear input buffer and default to exit */
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF);
+            userResponse = 'N';
+        }
         
-    }   while (askYesNo(userResponse)==0);
+    }   while (askYesNo(userResponse)==YES_RESPONSE); /* Use named constant instead of magic number */
 
     printf("Shutting down... Thank you for using WeatherApp!\n");
     return 0;
