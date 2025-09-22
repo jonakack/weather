@@ -52,7 +52,9 @@ void show_list(city_t *head){
     current = head; /* Resets *current to starting position */
 }
 
-int main()
+
+//Tvungen att kommentera ut tillsvidare för att kunna köra make run.
+/* int main()
 {
     city_t *head = NULL;
 
@@ -67,4 +69,4 @@ int main()
     show_list(head);
 
     return 0;
-}
+} */
