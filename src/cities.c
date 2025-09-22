@@ -80,6 +80,7 @@ int cities_choice() {
         }
         else {
             printf("Invalid choice. Try again. \n");
+            while (getchar() != '\n'); // clear the input buffer, can cause infinite loop otherwise
         }
     }
 

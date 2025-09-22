@@ -2,7 +2,7 @@
 #define WEATHER_H
 
 struct city {
-    char name[50];
+    char name[50]; // Ändra till char* name ksk?
     double latitude;
     double longitude;
 };
