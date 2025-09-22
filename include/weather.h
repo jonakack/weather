@@ -13,6 +13,7 @@ extern struct city *cities;
 extern int city_count;
 
 // Initialize functions used in main.c
+void readorcreatefile(const char *url, int city);
 void build_citystruct(void);
 void cities_showList(void);
 int cities_choice(void);
