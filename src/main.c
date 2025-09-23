@@ -23,7 +23,7 @@ int main()
         makeURL(city, url);         // Generate the URL for the selected city
 
         //char *json_str = http_init(url);
-        readorcreatefile(url, city); // Fetch weather data from file or API if file doesn't exist
+        read_or_create_file(url, city); // Fetch weather data from file or API if file doesn't exist
         printf("\nDo you want to select another city?\nEnter Y/N:\n");
         scanf(" %c", &userResponse);
         

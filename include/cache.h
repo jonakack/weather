@@ -1,7 +1,6 @@
 #ifndef CACHE_H
 #define CACHE_H
 
-// alla cache relaterade funktioner 
-void readorcreatefile(const char *url, int cityIndex);
-
+void read_or_create_file(const char *url, int cityIndex);
+void cleanup_old_weather_files();
 #endif

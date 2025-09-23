@@ -4,7 +4,6 @@
 #include <time.h>
 #include <sys/stat.h>
 #ifdef _WIN32
-    #include <direct.h>
     #define stat _stat
 #endif
 #include "../include/cache.h"
@@ -12,7 +11,11 @@
 #include "../include/http.h"
 #include "../include/json.h"
 
-void readorcreatefile(const char *url, int cityIndex) {
+void cleanup_old_weather_files() {
+    
+}
+
+void read_or_create_file(const char *url, int cityIndex) {
     char filename[256];
     const char *folder = "weather_data";
 
