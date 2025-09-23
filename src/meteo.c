@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <cjson/cJSON.h>
 #include <ctype.h>
+#include "../include/cJSON.h"
 #include "../include/meteo.h"
 
 
