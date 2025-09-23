@@ -8,7 +8,7 @@
     #define stat _stat
 #endif
 #include "../include/cache.h"
-#include "../include/weather.h"
+#include "../include/meteo.h"
 #include "../include/http.h"
 #include "../include/json.h"
 

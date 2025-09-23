@@ -3,7 +3,7 @@
 #include <curl/curl.h>
 #include <stdlib.h>
 #include "../include/json.h"
-#include "../include/weather.h"
+#include "../include/meteo.h"
 #include "../include/http.h"
 #include <stdlib.h>
 int main()

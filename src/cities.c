@@ -8,7 +8,7 @@
     #include <direct.h>
     #define stat _stat
 #endif
-#include "../include/weather.h"
+#include "../include/meteo.h"
 #include "../include/http.h"
 #include "../include/json.h"
 #include "../include/cache.h"
@@ -106,11 +106,8 @@ int cities_choice() {
     return -1;
 }
 
-
-
 // makeURL funktionen flyttad till weather.c eftersom den hanterar weather API URL-generering
 // och inte cities-hantering. Bättre separation of concerns.
-
 
 
 /* Returns 0 if char is Y/y and 1 if N/n */
