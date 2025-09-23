@@ -167,6 +167,7 @@ void readorcreatefile(const char *url, int cityIndex) {
     } else { 
         printf("Cached data expired %.0f seconds olds\n", seconds);
         }
+    }
     if (json_str == NULL) {
         json_str = http_init(url); // Fetch data from the API if the file doesn't exist
         if (json_str) {
@@ -180,7 +181,7 @@ void readorcreatefile(const char *url, int cityIndex) {
                 fprintf(stderr, "Could not open file %s for writing\n", filename);
             }    
         }
-    }
+    
     if (json_str) {
         parse_weather_json(json_str); // anropa funktionen för att parsa JSON-datan 
         free(json_str); // frigör minnet som allokerats för JSON-strängen
