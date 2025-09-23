@@ -16,7 +16,7 @@ void readorcreatefile(const char *url, int cityIndex) {
     char filename[256];
     const char *folder = "weather_data";
 
-    snprintf(filename, sizeof(filename), "%s/%s.txt", folder, cities[cityIndex - 1].name); //Build the path to the file
+    snprintf(filename, sizeof(filename), "%s/%s.json", folder, cities[cityIndex - 1].name); //Build the path to the file
 
     struct stat file_info; // Creates a variable called file_info that holds metadata about the file such as time of last modification
     FILE *city_file = fopen(filename, "r"); // Try to open the file for reading
