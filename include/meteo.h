@@ -1,5 +1,5 @@
-#ifndef WEATHER_H
-#define WEATHER_H
+#ifndef METEO_H
+#define METEO_H
 
 #include "cities.h"
 #include "cache.h"
