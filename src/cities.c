@@ -1,17 +1,25 @@
 #include <stdio.h>
+#include <errno.h>
 #include <curl/curl.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <sys/stat.h>
-#ifdef _WIN32
-    #include <direct.h>
-    #define stat _stat
-#endif
+
 #include "../include/meteo.h"
 #include "../include/http.h"
 #include "../include/json.h"
 #include "../include/cache.h"
+#include "../include/cJSON.h"
+
+// Macro to make mkdir work on Windows and Linux
+#ifdef _WIN32
+    #include <direct.h>
+    #define MKDIR(path) _mkdir(path)
+#else
+    #include <sys/stat.h>
+    #define MKDIR(path) mkdir(path, 0777)
+#endif
 
 const char *cities_str = "Stockholm:59.3293:18.0686\n" "Göteborg:57.7089:11.9746\n" 
     "Malmö:55.6050:13.0038\n" "Uppsala:59.8586:17.6389\n" "Västerås:59.6099:16.5448\n" 
@@ -20,15 +28,10 @@ const char *cities_str = "Stockholm:59.3293:18.0686\n" "Göteborg:57.7089:11.974
     "Gävle:60.6749:17.1413\n" "Sundsvall:62.3908:17.3069\n" "Umeå:63.8258:20.2630\n" 
     "Luleå:65.5848:22.1567\n" "Kiruna:67.8558:20.2253\n" "Skellefteå:64.7506:20.9528\n";
 
-// Global variables used in multiple functions in cities.c
 struct city *cities = NULL;
 int city_count;
 
-
-// Instead of manually reformatting the string "cities_str" into a struct
-// this function will take the string and create a struct array in the right format
-// this is to account for further expansion: what if the list contains 10 000 cities?
-void build_citystruct() {
+void build_citystruct(){
 
     city_count = 0;
     // Count how many cities are in the string
@@ -69,8 +72,7 @@ void build_citystruct() {
     // We don't free the allocated memory for cities yet, we still need it in other functions
 }
 
- /* Shows list of available cities */
-void cities_showList() {   
+void cities_showList(){   
     int i = 0;
     for (i=0; i<city_count; i++)
     {
@@ -78,8 +80,7 @@ void cities_showList() {
     }
 }
 
-/* Takes city choice as input and returns list number */
-int cities_choice() {   
+void cities_choice(int *cityIndexChoice){   
     int a = 0;
     int i = 0;
     
@@ -100,30 +101,54 @@ int cities_choice() {
             printf("_____________________________________________________________________________________________________\n");
             printf("\nYou chose %s!\n\n", cities[i].name);
             
-            return a;
+            *cityIndexChoice = a;
         }
     }
-    return -1;
 }
 
-// makeURL funktionen flyttad till weather.c eftersom den hanterar weather API URL-generering
-// och inte cities-hantering. Bättre separation of concerns.
-
-
-/* Returns 0 if char is Y/y and 1 if N/n */
-int askYesNo(char a)
-{
-    if  (a == 'Y' || a == 'y') {
+int askYesNo(char choice){
+    if  (choice == 'Y' || choice == 'y') {
         return 0;
     }  
-    else if (a == 'N' || a == 'n'){
+    else if (choice == 'N' || choice == 'n'){
         return 1;
     }
     else printf("Invalid input. Enter Y/N: \n"); 
-    scanf(" %c", &a);
-    return askYesNo(a); /* Recursive in case of invalid input */
+    scanf(" %c", &choice);
+    return askYesNo(choice); // Recursive in case of invalid input
 }
 
+int saveData(char *httpData, int i){
+    FILE *fptr;
+    char filename[100];
+
+    cJSON *json_obj = cJSON_Parse(httpData); // Parse data
+    char *httpData_json = cJSON_Print(json_obj); // Put parsed JSON data into a string
 
 
+    // Create folder called "data"
+    if (MKDIR("data") != 0) {
+        if (errno == EEXIST) { // Directory exists, this is OK
+        } else {
+            perror("Failed to create directory");
+            return -1;
+        }
+    }
 
+    // Create file in data folder
+    sprintf(filename, "data/%s_%.4f_%.4f.json", cities[i-1].name, cities[i-1].latitude, cities[i-1].longitude);
+    if ((fptr = fopen(filename, "w")) == NULL) {
+        perror("Failed to open file");
+        return -1;
+    } else {
+        if (fprintf(fptr, "%s", httpData_json) < 0) {
+            perror("Failed to write to file");
+            return -1;
+        }
+        if (fclose(fptr) != 0) {
+            perror("Failed to close file");
+            return -1;
+        }
+    }
+    return 0;
+}

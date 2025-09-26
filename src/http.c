@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// struct to hold the downloaded data
+
 struct Memory {
-    char *data;
+    char *data; // String that contains data
     size_t size;
 };
 
@@ -27,7 +27,7 @@ size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp) {
     return total;
 }
 
-// this function fetches data from URL and returns it as a string
+// This function fetches data from URL and returns it as a string
 char* http_init(const char* url) {
     CURL *curl = curl_easy_init();
     if (!curl) return NULL;
