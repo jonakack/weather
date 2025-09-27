@@ -3,7 +3,8 @@
 
 #define YES 0
 
-struct city {
+struct city
+{
     char name[50]; // Ändra till char* name ksk?
     double latitude;
     double longitude;
