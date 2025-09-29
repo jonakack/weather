@@ -37,7 +37,7 @@ void parse_weather_json(const char *json) {
             else if (choice == '3' && cJSON_IsNumber(code)) {
                 char weather_desc[100];
                 meteoWeatherCodes(code->valueint, weather_desc);
-                printf("Weather conditions: %s\n", weather_desc, code->valueint);
+                printf("Weather conditions: %s\n", weather_desc);
             }
             else if (choice == '4' && cJSON_IsString(time)) {
                 printf("Time: %s\n", time->valuestring);
