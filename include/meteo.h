@@ -6,5 +6,6 @@
 
 // meteo relaterade funktioner
 void makeURL(int cityIndex, char *url);
+void meteoWeatherCodes(int code, char *desc);
 
 #endif
