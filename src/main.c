@@ -5,12 +5,13 @@
 #include "../include/json.h"
 #include "../include/meteo.h"
 #include "../include/http.h"
+#include "../include/list.h"
 
 int main()
 {
     char userResponse;
     char url[256];
-    int city = 0;
+    int cityIndex = 0;
 
     build_citystruct();
 
@@ -20,16 +21,15 @@ int main()
                "Select a city by entering the city's number: \n");
 
         cities_showList();
-        cities_choice(&city);
-        makeURL(city, url);
-
-        // ---------- Temporary test lines for development ----------
+        cities_choice(&cityIndex);
+        makeURL(cityIndex, url);
 
         char *httpData = http_init(url);
-        // printf("%s\n\n", httpData);
-        saveData(httpData, city);
+        saveDataHeap(httpData, cityIndex); //  Is not used yet, only stored in memory. Needs more functions. 
+        saveData(httpData, cityIndex);
+        parse_weather_json(httpData);
 
-        // ---------------------------------------------------------
+        free(httpData);
 
         printf("\nDo you want to select another city?\nEnter Y/N:\n");
         scanf(" %c", &userResponse);

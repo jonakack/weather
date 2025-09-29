@@ -2,19 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct city
-{
-    char *name;
-    float time;
+#include "../include/list.h"
 
-    struct city *next;
-    struct city *prev;
-} city_t; 
-
-void add_city_to_list (city_t **head, char* name){
-    city_t *city = malloc(sizeof(city_t));
+void add_city_to_list (cityList **head, char* name){
+    cityList *city = malloc(sizeof(cityList));
     city->name = name;
- // todo: "city->time = vad nu tiden är"
+//  todo: "city->time = vad nu tiden är"
     city->next = *head;
     city->prev = NULL;
 
@@ -25,8 +18,8 @@ void add_city_to_list (city_t **head, char* name){
     *head = city;
 }
 
-void remove_city_from_list(city_t **head, char* name){
-    city_t *current = *head;
+void remove_city_from_list(cityList **head, char* name){
+    cityList *current = *head;
     while (current != NULL) 
     {
         if (strcmp(current->name, name) == 0){ /* Break loop if they match */
@@ -42,8 +35,8 @@ void remove_city_from_list(city_t **head, char* name){
     
 }
 
-void show_list(city_t *head){
-    city_t *current = head;
+void show_list(cityList *head){
+    cityList *current = head;
     while(current != NULL)
     {
         printf("%s\n", current->name);

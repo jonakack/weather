@@ -18,11 +18,24 @@
 #define MKDIR(path) mkdir(path, 0777)
 #endif
 
-int saveData(char *httpData, int i)
+int saveDataHeap(char *httpData, int index)
+{
+    cities[index - 1].content = malloc(strlen(httpData) + 1);
+    if (cities[index - 1].content == NULL)
+    {
+        return 1;
+    }
+    strcpy(cities[index - 1].content, httpData);
+
+    cities[index - 1].savedOrNot = true;
+    return 0;
+}
+
+int saveData(char *httpData, int index)
 {
     FILE *fptr = NULL;
     char filename[100];
-    int result = OK; // Initializing return value
+    int result = -3;
 
     cJSON *json_obj = cJSON_Parse(httpData);     // Parse data
     char *httpData_json = cJSON_Print(json_obj); // Put parsed JSON data into a string
@@ -43,7 +56,7 @@ int saveData(char *httpData, int i)
     }
 
     // Set file name
-    sprintf(filename, "data/%s_%.4f_%.4f.json", cities[i - 1].name, cities[i - 1].latitude, cities[i - 1].longitude);
+    sprintf(filename, "data/%s_%.4f_%.4f.json", cities[index - 1].name, cities[index - 1].latitude, cities[index - 1].longitude);
 
     int fileStatusResult = check_data_age(filename);
     if (fileStatusResult == OUT_OF_DATE || fileStatusResult == DOES_NOT_EXIST)

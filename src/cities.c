@@ -85,6 +85,7 @@ void build_citystruct()
         index++;
         line = strtok(NULL, "\n");
     }
+    cities[index].savedOrNot = false;
     free(buffer); // Free the allocated memory for buffer
     // We don't free the allocated memory for cities yet, we still need it in other functions
 }
@@ -119,7 +120,7 @@ void cities_choice(int *cityIndexChoice)
 
     for (i = 0; i < city_count; i++)
     {
-        if (a == i + 1) // Changed from a == cities[i].list to a == i+1 because I removed the list variable from the struct
+        if (a == i + 1)
         {
             printf("_____________________________________________________________________________________________________\n");
             printf("\nYou chose %s!\n\n", cities[i].name);
