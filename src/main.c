@@ -84,6 +84,8 @@ int main()
         saveDataHeap(httpData, cityIndex);  // Is not used yet, only stored in memory. Needs more functions.
         saveData(httpData, cityIndex);
 
+        // Parse JSON data and display weather menu to user and free memory afterwards
+
         WeatherData *weather_data = parse_weather_json(httpData);
         if (weather_data != NULL)
         {
