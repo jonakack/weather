@@ -5,31 +5,38 @@
 #include "../include/json.h"
 #include "../include/meteo.h"
 #include "../include/http.h"
-#include <stdlib.h>
+#include "../include/list.h"
+
 int main()
 {
     char userResponse;
     char url[256];
-    build_citystruct();             // Build the city struct array
+    int cityIndex = 0;
 
-    do 
-    {   
-        printf ("-----------------WeatherApp-----------------\n"
-                "Select a city by entering the city's number: \n");
-        
-        cities_showList();          // Show list of available cities
-        int city = cities_choice(); // Get user's city choice
+    build_citystruct();
 
-        makeURL(city, url);         // Generate the URL for the selected city
+    do
+    {
+        printf("-----------------WeatherApp-----------------\n"
+               "Select a city by entering the city's number: \n");
 
-        //char *json_str = http_init(url);
-        readorcreatefile(url, city); // Fetch weather data from file or API if file doesn't exist
+        cities_showList();
+        cities_choice(&cityIndex);
+        makeURL(cityIndex, url);
+
+        char *httpData = http_init(url);
+        saveDataHeap(httpData, cityIndex); //  Is not used yet, only stored in memory. Needs more functions. 
+        saveData(httpData, cityIndex);
+        parse_weather_json(httpData);
+
+        free(httpData);
+
         printf("\nDo you want to select another city?\nEnter Y/N:\n");
         scanf(" %c", &userResponse);
-        
-    }   while (askYesNo(userResponse)==0);
 
-    free(cities);   // Now we free the allocated memory for cities, since we no longer need it
+    } while (askYesNo(userResponse) == YES);
+
+    free(cities); // Now we free the allocated memory for cities, since we no longer need it
     printf("Shutting down... Thank you for using WeatherApp!\n");
     return 0;
 }

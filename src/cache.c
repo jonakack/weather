@@ -1,69 +1,132 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
+#include <errno.h>
 #include <sys/stat.h>
-#ifdef _WIN32
-    #include <direct.h>
-    #define stat _stat
-#endif
+#include <time.h>
+
+#include "../include/cities.h"
 #include "../include/cache.h"
-#include "../include/meteo.h"
-#include "../include/http.h"
-#include "../include/json.h"
+#include "../include/cJSON.h"
 
-void readorcreatefile(const char *url, int cityIndex) {
-    char filename[256];
-    const char *folder = "weather_data";
+// Macro to make mkdir work on Windows and Linux
+#ifdef _WIN32
+#include <direct.h>
+#define MKDIR(path) _mkdir(path)
+#else
+#include <sys/stat.h>
+#define MKDIR(path) mkdir(path, 0777)
+#endif
 
-    snprintf(filename, sizeof(filename), "%s/%s.json", folder, cities[cityIndex - 1].name); //Build the path to the file
+int saveDataHeap(char *httpData, int index)
+{
+    cities[index - 1].content = malloc(strlen(httpData) + 1);
+    if (cities[index - 1].content == NULL)
+    {
+        return 1;
+    }
+    strcpy(cities[index - 1].content, httpData);
 
-    struct stat file_info; // Creates a variable called file_info that holds metadata about the file such as time of last modification
-    FILE *city_file = fopen(filename, "r"); // Try to open the file for reading
-    char *json_str = NULL;
+    cities[index - 1].savedOrNot = true;
+    return 0;
+}
 
+int saveData(char *httpData, int index)
+{
+    FILE *fptr = NULL;
+    char filename[100];
+    int result = -3;
 
-    if (stat(filename, &file_info) == 0) { // If the file exists
-        time_t current_time = time(NULL); // Get the current time
-        double seconds = difftime(current_time, file_info.st_mtime); // Calculate the difference in seconds between current time and file's last modification time
+    cJSON *json_obj = cJSON_Parse(httpData);     // Parse data
+    char *httpData_json = cJSON_Print(json_obj); // Put parsed JSON data into a string
 
-        if (seconds <= 15 * 60) { // If the last modification is less than 900 seconds old, read from it
-            city_file = fopen(filename, "r");
-            if (city_file) {
-                fseek(city_file, 0, SEEK_END); // Move the file pointer to the end of the file
-                long size = ftell(city_file);  // Get the current position of the file pointer save it to variable file
-                rewind(city_file);
-
-                json_str = malloc(size + 1); // Allocate memory to hold the file contents +1 for \0
-                if (json_str) {
-                    fread(json_str, 1, size, city_file);
-                    json_str[size] = '\0'; // Null-terminate the string
-                }
-                fclose(city_file);
-                printf("Succesfully loaded cached data! The data is %.0f seconds old\n", seconds);
-            }
-        } else {
-            printf("Cached data expired %.0f seconds old\n", seconds);
+    // Create folder called "data"
+    if (MKDIR("data") != OK)
+    {
+        if (errno == EEXIST)
+        {
+            // Directory exists, this is OK
+        }
+        else
+        {
+            perror("Failed to create directory");
+            result = ERROR;
+            goto cleanup;
         }
     }
 
-    if (json_str == NULL) {
-        json_str = http_init(url); // Fetch data from the API if the file doesn't exist
-        if (json_str) {
-            city_file = fopen(filename, "w");
-            if (city_file) {
-                fputs(json_str, city_file);
-                fclose(city_file);
-                printf("Fetched data and saved it to %s.txt\n", cities[cityIndex - 1].name);
+    // Set file name
+    sprintf(filename, "data/%s_%.4f_%.4f.json", cities[index - 1].name, cities[index - 1].latitude, cities[index - 1].longitude);
+
+    int fileStatusResult = check_data_age(filename);
+    if (fileStatusResult == OUT_OF_DATE || fileStatusResult == DOES_NOT_EXIST)
+    {
+        // Create file in data folder
+        if ((fptr = fopen(filename, "w")) == NULL)
+        {
+            perror("Failed to open file");
+            result = ERROR;
+            goto cleanup;
+        }
+        else
+        {
+            if (fprintf(fptr, "%s", httpData_json) < OK)
+            {
+                perror("Failed to write to file");
+                result = ERROR;
+                goto cleanup;
             }
-        } else {
-            fprintf(stderr, "Could not open file %s for writing\n", filename);
+            if (fclose(fptr) != OK)
+            {
+                perror("Failed to close file");
+                result = ERROR;
+                goto cleanup;
+            }
+            fptr = NULL;
+        }
+        result = OUT_OF_DATE; // No new file needed
+        goto cleanup;
+    }
+
+cleanup:
+    if (fptr != NULL)
+    {
+        fclose(fptr);
+    }
+    free(httpData_json);
+    cJSON_Delete(json_obj);
+    return result;
+}
+
+int check_data_age(const char *filename)
+{
+    struct stat fileStatus;
+
+    if (stat(filename, &fileStatus) != OK)
+    {
+        if (errno == ENOENT) // errno checks if error is because file doesn't exist
+        {
+            printf("File does not exist, creating new one... \n");
+            return DOES_NOT_EXIST;
+        }
+        else
+        {
+            perror("Failed to get file status");
+            return ERROR;
         }
     }
-    if (json_str) {
-        parse_weather_json(json_str); // anropa funktionen för att parsa JSON-datan
-        free(json_str); // frigör minnet som allokerats för JSON-strängen
-    } else {
-        printf("Failed to get or load data\n");
+
+    time_t mod_time = fileStatus.st_mtime;
+    time_t current_time = time(NULL);
+
+    if ((current_time - mod_time) > 900) // Checks if file is older than 15 minutes
+    {
+        printf("File is older than 15 minutes, creating new one... \n");
+        return OUT_OF_DATE;
+    }
+    else
+    {
+        printf("File is up to date. No new file needed. \n");
+        return UP_TO_DATE;
     }
 }
