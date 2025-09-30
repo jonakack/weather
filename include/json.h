@@ -18,6 +18,6 @@ typedef struct {
 WeatherData* parse_weather_json(const char *json);
 
 // Free the allocated WeatherData struct
-void free_weather_data(WeatherData *data);
+void free_weather_data(WeatherData *weather);
 
 #endif
