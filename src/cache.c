@@ -18,7 +18,7 @@
 #define MKDIR(path) mkdir(path, 0777)
 #endif
 
-int saveDataHeap(char *httpData, int index)
+int save_data_heap(char *httpData, int index)
 {
     cities[index - 1].content = malloc(strlen(httpData) + 1);
     if (cities[index - 1].content == NULL)
@@ -31,7 +31,7 @@ int saveDataHeap(char *httpData, int index)
     return 0;
 }
 
-int saveData(char *httpData, int index)
+int save_data(char *httpData, int index)
 {
     FILE *fptr = NULL;
     char filename[100];

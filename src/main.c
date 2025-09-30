@@ -81,8 +81,8 @@ int main()
         makeURL(cityIndex, url);
 
         char *httpData = http_init(url);
-        saveDataHeap(httpData, cityIndex);  // Is not used yet, only stored in memory. Needs more functions.
-        saveData(httpData, cityIndex);
+        save_data_heap(httpData, cityIndex);  // Is not used yet, only stored in memory. Needs more functions.
+        save_data(httpData, cityIndex);
 
         WeatherData *weather_data = parse_weather_json(httpData);
         if (weather_data != NULL)
@@ -98,7 +98,7 @@ int main()
 
     } while (askYesNo(userResponse) == YES);
 
-    free(cities);  // Now we free the allocated memory for cities, since we no longer need it
+    free(cities);
     printf("Shutting down... Thank you for using WeatherApp!\n");
     
     return 0;
