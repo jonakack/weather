@@ -22,9 +22,5 @@ void city_print(CityData *city);
 CityData* city_find_by_name(const char *name);
 CityData* city_find_by_coordinates(double latitude, double longitude);
 
-// Integration functions (connecting cache + json + city)
-WeatherData* city_load_weather(CityData *city);  // Load from cache OR fetch
-int city_update_weather(CityData *city);         // Force update
-bool city_has_weather(CityData *city);           // Check if weather exists
 
 #endif
