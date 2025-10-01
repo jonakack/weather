@@ -5,6 +5,14 @@
 #include "utils/LinkedList.h"
 #include "city.h"
 
+// Return codes for Cities operations
+typedef enum CitiesResult
+{
+    CITIES_SUCCESS = 0,
+    CITIES_ERROR = -1,
+    CITIES_NOT_FOUND = -2
+} CitiesResult;
+
 #define YES 0
 #define NO -1
 

@@ -1,10 +1,21 @@
-#define _POSIX_C_SOURCE 200809L
+#define _POSIX_C_SOURCE 200809L // For strdup on Linux
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <errno.h>
 
 #include "../include/cities_new.h"
 #include "../include/city.h"
+#include "../include/cJSON.h"
+
+// Macro to make mkdir work on Windows and Linux
+#ifdef _WIN32
+#include <direct.h>
+#define MKDIR(path) _mkdir(path)
+#else
+#define MKDIR(path) mkdir(path, 0777)
+#endif
 
 // Default cities list
 const char* Cities_list = 	"Stockholm:59.3293:18.0686\n"
@@ -28,17 +39,83 @@ const char* Cities_list = 	"Stockholm:59.3293:18.0686\n"
 int Cities_Init(Cities** _CitiesPtr)
 {
 	if(_CitiesPtr == NULL)
-		return -1;
+		return CITIES_ERROR;
 
 	Cities* _Cities = (Cities*)malloc(sizeof(Cities));
 	if(_Cities == NULL)
-		return -2;
+		return CITIES_ERROR;
 
 	LinkedList_Initialize(&_Cities->list);
 
 	Cities_AddFromStringList(_Cities, Cities_list);
 
 	*(_CitiesPtr) = _Cities;
+	return CITIES_SUCCESS;
+}
+
+// Helper function to save city metadata to JSON file, only if it doesn't exist
+static int Cities_SaveCityMetadataToJSON(CityData* city)
+{
+	if(city == NULL)
+		return -1; // Invalid argument for the function to save city metadata
+
+	// Create cities directory if it doesn't exist
+	if (MKDIR("cities") != 0)
+	{
+		if (errno != EEXIST)
+		{
+			perror("Failed to create citiesS directory: Permission denied");
+			return -2;
+		}
+	}
+
+	// Create filename: cities/CityName_lat_lon.json
+	char filename[128];
+	snprintf(filename, sizeof(filename), "cities/%s_%.2f_%.2f.json",
+		city->name, city->latitude, city->longitude);
+
+	// Check if file already exists
+	struct stat file_stat;
+	if(stat(filename, &file_stat) == 0)
+	{
+		// File already exists, skip creation
+		return 0;
+	}
+
+	// Create JSON object with city metadata
+	cJSON *json_city = cJSON_CreateObject();
+	if(json_city == NULL)
+		return -3;
+
+	cJSON_AddStringToObject(json_city, "name", city->name);
+	cJSON_AddNumberToObject(json_city, "latitude", city->latitude);
+	cJSON_AddNumberToObject(json_city, "longitude", city->longitude);
+
+	// Convert to string
+	char *json_string = cJSON_Print(json_city);
+	if(json_string == NULL)
+	{
+		cJSON_Delete(json_city);
+		return -4;
+	}
+
+	// Write to file
+	FILE *fp = fopen(filename, "w");
+	if(fp == NULL)
+	{
+		fprintf(stderr, "Failed to create city file: %s\n", filename);
+		free(json_string);
+		cJSON_Delete(json_city);
+		return -5;
+	}
+
+	fprintf(fp, "%s", json_string);
+	fclose(fp);
+
+	// Cleanup
+	free(json_string);
+	cJSON_Delete(json_city);
+
 	return 0;
 }
 
@@ -87,7 +164,14 @@ void Cities_AddFromStringList(Cities* _Cities, const char* _StringList)
 			{
 				*(ptr) = '\0';
 
-				Cities_Create(_Cities, name, lat_str, lon_str, NULL);
+				CityData* new_city = NULL;
+				Cities_Create(_Cities, name, lat_str, lon_str, &new_city);
+
+				// Bootstrap: Save city metadata to JSON file 
+				if(new_city != NULL)
+				{
+					Cities_SaveCityMetadataToJSON(new_city);
+				}
 
 				name = NULL;
 				lat_str = NULL;

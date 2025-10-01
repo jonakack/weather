@@ -2,7 +2,7 @@ CC := gcc
 INCLUDE := -I/mingw64/include
 LIB := -L/mingw64/lib
 CFLAGS := -std=c11 -Wall -Wextra $(INCLUDE)
-SRC := $(wildcard src/*.c)
+SRC := $(wildcard src/*.c) $(wildcard src/utils/*.c)
 OBJ := $(patsubst src/%.c,build/%.o,$(SRC))
 DEP := $(OBJ:.o=.d)
 BIN := build/main
@@ -13,6 +13,10 @@ $(BIN): $(OBJ)
 	$(CC) $(CFLAGS) $^ -o $@ $(LIB) -lcurl -lcjson
 
 build/%.o: src/%.c
+	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@ -MF $(basename $@).d
+
+build/utils/%.o: src/utils/%.c
+	@mkdir -p build/utils
 	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@ -MF $(basename $@).d
 
 run: $(BIN)

@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "../include/city.h"
-#include "../include/json.h"  
+#include "../include/json.h"
 
 // Create a new city 
 CityData* city_create(const char* name, double latitute, double longitude)
@@ -14,7 +14,7 @@ CityData* city_create(const char* name, double latitute, double longitude)
         return NULL;
     }
     strncpy(city->name, name, sizeof(city->name) - 1);
-    city->name[sizeof(city->name) - 1] = '\0'; // Ensure null-termination
+    city->name[sizeof(city->name) - 1] = '\0'; // Leaving space for null terminator
     city->latitude = latitute;
     city->longitude = longitude;
     city->weather_data = NULL; // Initialize weather_data to NULL
@@ -26,10 +26,10 @@ void city_free(CityData *city)
 {
     if (city == NULL) return;
     
-    if (city->weather_data != NULL) {
-        free_weather_data(city->weather_data);
+    if (city->weather_data != NULL) { 
+        free_weather_data(city->weather_data); 
     }
-    free(city);
+    free(city); // Free the city struct itself 
 }
 
 // Attach weather data to city
@@ -37,10 +37,10 @@ void city_attach_weather(CityData *city, WeatherData *weather)
 {
     if (city == NULL) return;
     
-    if (city->weather_data != NULL) {
-        free_weather_data(city->weather_data);
+    if (city->weather_data != NULL) { 
+        free_weather_data(city->weather_data); // Free existing weather data if any 
     }
-    city->weather_data = weather;
+    city->weather_data = weather; // Attach new weather data so the city owns it
 }
 
 // Print city with weather
@@ -80,14 +80,14 @@ bool city_has_weather(CityData *city)
 // Search functions (not implemented yet )
 CityData* city_find_by_name(const char *name)
 {
-    // TODO: Implement when integrated with Cities manager
+    // TODO: Integrate with Cities manager
     (void)name;
     return NULL;
 }
 
 CityData* city_find_by_coordinates(double latitude, double longitude)
 {
-    // TODO: Implement when integrated with Cities manager
+    // TODO: Integrate with Cities manager
     (void)latitude;
     (void)longitude;
     return NULL;

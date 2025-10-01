@@ -3,9 +3,15 @@
 
 #include "cities.h"
 #include "cache.h"
+#include "city.h"
 
-// Initialize functions defined in meteo.c
-void makeURL(int cityIndex, char *url);
+// OLD API
+//void makeURL(int cityIndex, char *url);
+
+// New makeURL using CityData struct instead of cityIndex
+void makeURLFromCity(CityData* city, char *url);
+
+// Utility function to get weather conditions from code
 void meteoWeatherCodes(int code, char *desc);
 
 #endif
