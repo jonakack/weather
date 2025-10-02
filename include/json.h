@@ -14,7 +14,6 @@ typedef struct {
     int has_time;
 } WeatherData;
 
-// Parses current weather json and returns a WeatherData struct
 WeatherData* parse_weather_json(const char *json);
 
 void display_weather_menu(WeatherData *data, char *cityName);

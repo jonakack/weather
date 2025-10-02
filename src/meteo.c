@@ -38,7 +38,7 @@ int download_city_data(cityList *city)
     save_data(city, httpData);
     
     free(url);
-    free(httpData);  // Fix memory leak
+    free(httpData);
     return 0;
 }
 

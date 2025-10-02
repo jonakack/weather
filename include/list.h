@@ -11,6 +11,7 @@ typedef struct cityList
     char *name;
     double latitude;
     double longitude;
+    
     char *filename;
 
     struct cityList *next;
