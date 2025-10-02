@@ -10,7 +10,7 @@
 
 int get_city_data(const char *choice)
 {
-    cityList *chosenCity = search_list((char*)choice); // returns a pointer to the city if it is found
+    cityList *chosenCity = search_list((char *)choice); // returns a pointer to the city if it is found
     if (chosenCity == NULL)
     {
         printf("City not found.\n");
@@ -19,39 +19,42 @@ int get_city_data(const char *choice)
 
     // Check if local file exists
     int check_result = check_existing(chosenCity);
-    if(check_result == 0 || check_result == ERROR){
+    if (check_result == 0 || check_result == ERROR)
+    {
         download_city_data(chosenCity);
-    } 
+    }
 
     show_weather_data(chosenCity->filename, chosenCity->name);
-    
+
     return 0;
 }
 
 int show_weather_data(char *filename, char *cityName)
 {
     FILE *file = fopen(filename, "r");
-    if (file == NULL) {
+    if (file == NULL)
+    {
         perror("Failed to open file");
         return 1;
     }
-    
+
     // Get file size
     fseek(file, 0, SEEK_END);
     long file_size = ftell(file);
     fseek(file, 0, SEEK_SET);
-    
+
     // Allocate memory for file content
     char *httpData = malloc(file_size + 1);
-    if (httpData == NULL) {
+    if (httpData == NULL)
+    {
         printf("Failed to allocate memory\n");
         fclose(file);
         return 1;
     }
-    
+
     // Read file content
     fread(httpData, 1, file_size, file);
-    httpData[file_size] = '\0';  // Null terminate
+    httpData[file_size] = '\0'; // Null terminate
     fclose(file);
 
     WeatherData *weather_data = parse_weather_json(httpData);
@@ -67,7 +70,8 @@ int show_weather_data(char *filename, char *cityName)
 
 int ask_yes_or_no(char choice)
 {
-    while (1) {
+    while (1)
+    {
         if (choice == 'Y' || choice == 'y')
         {
             return 0;
@@ -76,11 +80,13 @@ int ask_yes_or_no(char choice)
         {
             return 1;
         }
-        else {
+        else
+        {
             printf("Invalid input. Enter Y/N: \n");
             // Clear the input buffer
             int c;
-            while ((c = getchar()) != '\n' && c != EOF);
+            while ((c = getchar()) != '\n' && c != EOF)
+                ;
             scanf(" %c", &choice);
         }
     }

@@ -10,7 +10,6 @@ int main()
     char userResponse;
     char userChoice[32];
 
-    
     load_city_list();
 
     do
@@ -19,8 +18,9 @@ int main()
                "Select a city by entering the city's name: \n");
 
         show_cities_list();
-        
-        if (scanf("%31s", userChoice) != 1) {
+
+        if (scanf("%31s", userChoice) != 1)
+        {
             printf("Invalid input\n");
             continue;
         }

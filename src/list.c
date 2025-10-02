@@ -5,7 +5,6 @@
 
 #include "../include/list.h"
 
-
 char *stringList = "Stockholm:59.3293:18.0686\n"
                    "Göteborg:57.7089:11.9746\n"
                    "Malmö:55.6050:13.0038\n"
@@ -28,8 +27,8 @@ cityList *head;
 
 int load_city_list()
 {
-	build_cities_list(stringList);
-	return 0;
+    build_cities_list(stringList);
+    return 0;
 }
 
 void build_cities_list(char *stringList) // Takes a string of cities, separates them
@@ -95,7 +94,8 @@ void build_cities_list(char *stringList) // Takes a string of cities, separates 
 cityList *initialize_city() // Creates an empty city and returns its adress
 {
     cityList *initialize_city = malloc(sizeof(cityList));
-    if (initialize_city == NULL) {
+    if (initialize_city == NULL)
+    {
         return NULL;
     }
     // Initialize all fields to safe values
@@ -112,7 +112,8 @@ cityList *initialize_city() // Creates an empty city and returns its adress
 void create_city(char *name, char *lat, char *lon)
 {
     cityList *new_city = initialize_city();
-    if (new_city == NULL) {
+    if (new_city == NULL)
+    {
         printf("Failed to allocate memory for city\n");
         return;
     }
@@ -120,14 +121,15 @@ void create_city(char *name, char *lat, char *lon)
     new_city->name = strdup(name);
     new_city->latitude = atof(lat);
     new_city->longitude = atof(lon);
-    
+
     // Create filename
     char filename[200];
     sprintf(filename, "data/%s_%.4f_%.4f.json", name, atof(lat), atof(lon));
     new_city->filename = strdup(filename);
-    
+
     // Check for allocation failures
-    if (new_city->name == NULL || new_city->filename == NULL) {
+    if (new_city->name == NULL || new_city->filename == NULL)
+    {
         printf("Failed to allocate memory for city strings\n");
         free(new_city->name);
         free(new_city->filename);
@@ -163,13 +165,17 @@ void remove_city_from_list(cityList **head, char *name)
     {
         if (strcmp(current->name, name) == 0)
         { /* Break loop if they match */
-            if (current->prev != NULL) {
+            if (current->prev != NULL)
+            {
                 current->prev->next = current->next;
-            } else {
+            }
+            else
+            {
                 // Removing head node
                 *head = current->next;
             }
-            if (current->next != NULL) {
+            if (current->next != NULL)
+            {
                 current->next->prev = current->prev;
             }
             free(current->name);
@@ -200,13 +206,14 @@ void show_cities_list()
 
 cityList *search_list(char *target)
 {
-	cityList *current = head;
+    cityList *current = head;
     while (current != NULL)
     {
-		if((strcmp(target, current->name)) == 0){
-			return current;
-		}
+        if ((strcmp(target, current->name)) == 0)
+        {
+            return current;
+        }
         current = current->next;
     }
-	return NULL;
+    return NULL;
 }

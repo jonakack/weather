@@ -3,19 +3,22 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct Memory {
+struct Memory
+{
     char *data; // String that contains data
     size_t size;
 };
 
 // this function is called by libcurl when data comes in
-size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp) {
+size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp)
+{
     size_t total = size * nmemb;
     struct Memory *mem = (struct Memory *)userp;
 
     // grow buffer to fit new data
     char *ptr = realloc(mem->data, mem->size + total + 1);
-    if (ptr == NULL) {
+    if (ptr == NULL)
+    {
         return 0; // out of memory
     }
 
@@ -28,9 +31,11 @@ size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp) {
 }
 
 // This function fetches data from URL and returns it as a string
-char* http_init(const char* url) {
+char *http_init(const char *url)
+{
     CURL *curl = curl_easy_init();
-    if (!curl) return NULL;
+    if (!curl)
+        return NULL;
 
     struct Memory chunk = {0};
 
@@ -38,7 +43,8 @@ char* http_init(const char* url) {
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
 
-    if (curl_easy_perform(curl) != CURLE_OK) {
+    if (curl_easy_perform(curl) != CURLE_OK)
+    {
         curl_easy_cleanup(curl);
         free(chunk.data);
         return NULL;

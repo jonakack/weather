@@ -23,30 +23,33 @@
 int check_existing(cityList *city)
 {
     DIR *dir = opendir("data");
-    if (dir == NULL){
+    if (dir == NULL)
+    {
         return ERROR;
     }
 
     char target_filename[100];
     sprintf(target_filename, "%s_%.4f_%.4f.json", city->name, city->latitude, city->longitude);
-    
+
     char full_path[200];
     sprintf(full_path, "data/%s", target_filename);
-    
+
     // Loop through all files in the directory
     struct dirent *entry;
-    while ((entry = readdir(dir)) != NULL) {
-        if (strcmp(entry->d_name, target_filename) == 0) {
+    while ((entry = readdir(dir)) != NULL)
+    {
+        if (strcmp(entry->d_name, target_filename) == 0)
+        {
             closedir(dir);
             if (check_data_age(full_path) == OUT_OF_DATE)
             {
                 printf("File exists but is outdated\n");
                 return 0; // File exists but is outdated
-            } 
+            }
             else if (check_data_age(full_path) == UP_TO_DATE)
             {
                 printf("File exists and is up to date. No action needed\n");
-                return -2;  // File exists
+                return -2; // File exists
             }
         }
     }
@@ -126,7 +129,8 @@ int check_data_age(const char *filename)
         {
             return DOES_NOT_EXIST;
         }
-        else return ERROR;
+        else
+            return ERROR;
     }
 
     time_t mod_time = fileStatus.st_mtime;
@@ -136,5 +140,6 @@ int check_data_age(const char *filename)
     {
         return OUT_OF_DATE;
     }
-    else return UP_TO_DATE;
+    else
+        return UP_TO_DATE;
 }
