@@ -1,15 +1,45 @@
 #include <stdio.h>
 #include <ctype.h>
+#include <stdlib.h>
+
 #include "../include/cJSON.h"
 #include "../include/meteo.h"
+#include "../include/list.h"
+#include "../include/cache.h"
 
+char *makeURL(double latitude, double longitude) {
+    char *url = malloc(256);
+    if (url == NULL) {
+        return NULL;
+    }
+    sprintf(url, "https://api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f&current_weather=true",
+            latitude,
+            longitude);
+    return url;
+}
 
+int download_city_data(cityList *city)
+{
+    printf("Creating URL...\n");
+    char *url = makeURL(city->latitude, city->longitude);
+    if (url == NULL) {
+        return -1;
+    }
+    printf("Downloading HTTP data...\n");
+    char *httpData = http_init(url);
+    
+    if (httpData == NULL) {
+        printf("Failed to download weather data\n");
+        free(url);
+        return -1;
+    }
 
-void makeURL(int cityIndex, char *url) {
-    sprintf (url, "https://api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f&current_weather=true",
-            cities[cityIndex-1].latitude,
-            cities[cityIndex-1].longitude);
-    while (getchar() != '\n'); // clear the input buffer so \n doesn't follow into the next user input
+    printf("Parsing and saving data in %s's file...\n", city->name);
+    save_data(city, httpData);
+    
+    free(url);
+    free(httpData);  // Fix memory leak
+    return 0;
 }
 
 void meteoWeatherCodes(int code, char *desc) {

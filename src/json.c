@@ -4,6 +4,7 @@
 #include <string.h>
 #include "../include/cJSON.h"
 #include "../include/json.h"
+#include "../include/meteo.h"
 
 WeatherData* parse_weather_json(const char *json) {
     cJSON *root = cJSON_Parse(json);
@@ -51,4 +52,33 @@ void free_weather_data(WeatherData *data) {
         free(data->time);
         free(data);
     }
+}
+
+void display_weather_menu(WeatherData *data, char *cityName)
+{
+    printf("\n========= Weather in %s =========\n", cityName);
+    
+    if (data->has_temperature) {
+        printf("# Temperature: %.1f °C\n", data->temperature);
+    }
+    
+    if (data->has_windspeed) {
+        printf("# Wind Speed: %.1f m/s\n", data->windspeed);
+    }
+    
+    if (data->has_winddirection) {
+        printf("# Wind Direction: %d°\n", data->winddirection);
+    }
+    
+    if (data->has_weathercode) {
+        char weather_desc[100];
+        meteoWeatherCodes(data->weathercode, weather_desc);
+        printf("# Weather Conditions: %s\n", weather_desc);
+    }
+    
+    if (data->has_time) {
+        printf("# Time: %s\n", data->time);
+    }
+    
+    printf("=====================================\n\n");
 }

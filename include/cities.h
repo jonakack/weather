@@ -6,22 +6,8 @@
 #define YES 0
 #define NO -1
 
-struct city
-{
-    char name[50]; // Ändra till char* name ksk?
-    double latitude;
-    double longitude;
-    char *content;
-    bool savedOrNot;
-};
-
-extern struct city *cities;
-extern int city_count;
-
-// Initialize functions used in main.c
-void build_citystruct(void);
-void cities_showList(void);
-void cities_choice(int *cityIndexChoice);
-int askYesNo(char a);
+int ask_yes_or_no(char choice);
+int get_city_data(const char *choice);
+int show_weather_data(char *filename, char *cityName);
 
 #endif
