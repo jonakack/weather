@@ -19,7 +19,7 @@ int get_city_data(const char *choice)
 
     // Check if local file exists
     int check_result = check_existing(chosenCity);
-    if (check_result == 0 || check_result == ERROR)
+    if (check_result == 0 || check_result == -1)
     {
         download_city_data(chosenCity);
     }

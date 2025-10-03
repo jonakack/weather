@@ -25,7 +25,7 @@ int check_existing(cityList *city)
     DIR *dir = opendir("data");
     if (dir == NULL)
     {
-        return ERROR;
+        return -1;
     }
 
     char target_filename[100];
