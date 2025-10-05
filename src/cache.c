@@ -77,7 +77,6 @@ int save_data(cityList *city, char *httpData)
 
     // Set file name
     sprintf(filename, "data/%s_%.4f_%.4f.json", city->name, city->latitude, city->longitude);
-    // Don't overwrite the filename - it's already set correctly in create_city()
 
     int fileStatusResult = check_data_age(filename);
     if (fileStatusResult == OUT_OF_DATE || fileStatusResult == DOES_NOT_EXIST)
