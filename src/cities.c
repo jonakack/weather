@@ -9,26 +9,102 @@
 #include "../include/cache.h"
 #include "../include/meteo.h"
 
+// Convert UTF-8 å, ä, ö to uppercase
+static int utf8_swedish_to_upper(const char *src, char *dst)
+{
+    if ((unsigned char)src[0] == 0xc3)
+    {
+        if ((unsigned char)src[1] == 0xa5)
+        {
+            dst[0] = 0xc3;
+            dst[1] = 0x85;
+            return 2;
+        } // Å
+        if ((unsigned char)src[1] == 0xa4)
+        {
+            dst[0] = 0xc3;
+            dst[1] = 0x84;
+            return 2;
+        } // Ä
+        if ((unsigned char)src[1] == 0xb6)
+        {
+            dst[0] = 0xc3;
+            dst[1] = 0x96;
+            return 2;
+        } // Ö
+    }
+    // ASCII
+    dst[0] = toupper((unsigned char)src[0]);
+    return 1;
+}
+
+// Convert UTF-8 Å, Ä, Ö to lowercase
+static int utf8_swedish_to_lower(const char *src, char *dst)
+{
+    if ((unsigned char)src[0] == 0xc3)
+    {
+        if ((unsigned char)src[1] == 0x85)
+        {
+            dst[0] = 0xc3;
+            dst[1] = 0xa5;
+            return 2;
+        } // å
+        if ((unsigned char)src[1] == 0x84)
+        {
+            dst[0] = 0xc3;
+            dst[1] = 0xa4;
+            return 2;
+        } // ä
+        if ((unsigned char)src[1] == 0x96)
+        {
+            dst[0] = 0xc3;
+            dst[1] = 0xb6;
+            return 2;
+        } // ö
+    }
+    dst[0] = tolower((unsigned char)src[0]);
+    return 1;
+}
+
 void get_city_choice(char *userChoice)
 {
-    int stringLength = 0;
-
-     while (scanf("%31s", userChoice) != 1)
-     {
+    char input[64];
+    int len = 0;
+    while (scanf("%63s", input) != 1)
+    {
         printf("Invalid input\n");
-     }
-
-     stringLength = strlen(userChoice);
-     userChoice[0] = toupper(userChoice[0]);
-     for (int i = 1; i < stringLength; i++)
-     {
-        userChoice[i] = tolower(userChoice[i]);
-     }
+    }
+    len = strlen(input);
+    int i = 0, j = 0;
+    // Uppercase first character (ASCII or UTF-8 Swedish)
+    if ((unsigned char)input[i] == 0xc3 && i + 1 < len)
+    {
+        j += utf8_swedish_to_upper(&input[i], &userChoice[j]);
+        i += 2;
+    }
+    else
+    {
+        userChoice[j++] = toupper((unsigned char)input[i++]);
+    }
+    // Lowercase the rest (ASCII or UTF-8 Swedish)
+    while (i < len)
+    {
+        if ((unsigned char)input[i] == 0xc3 && i + 1 < len)
+        {
+            j += utf8_swedish_to_lower(&input[i], &userChoice[j]);
+            i += 2;
+        }
+        else
+        {
+            userChoice[j++] = tolower((unsigned char)input[i++]);
+        }
+    }
+    userChoice[j] = '\0';
 }
 
 int get_city_data(const char *choice)
 {
-    cityList *chosenCity = search_list((char *)choice); // returns a pointer to the city if it is found
+    cityList *chosenCity = search_list((char *)choice); // Returns a pointer to the city if it is found
     if (chosenCity == NULL)
     {
         printf("City not found.\n");
@@ -61,7 +137,6 @@ int show_weather_data(char *filename, char *cityName)
     long file_size = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    // Allocate memory for file content
     char *httpData = malloc(file_size + 1);
     if (httpData == NULL)
     {
@@ -70,9 +145,8 @@ int show_weather_data(char *filename, char *cityName)
         return 1;
     }
 
-    // Read file content
     fread(httpData, 1, file_size, file);
-    httpData[file_size] = '\0'; // Null terminate
+    httpData[file_size] = '\0';
     fclose(file);
 
     WeatherData *weather_data = parse_weather_json(httpData);
