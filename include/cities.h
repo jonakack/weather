@@ -9,5 +9,6 @@
 int ask_yes_or_no(char choice);
 int get_city_data(const char *choice);
 int show_weather_data(char *filename, char *cityName);
+void get_city_choice(char *userChoice);
 
 #endif

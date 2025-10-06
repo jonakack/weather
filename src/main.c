@@ -8,7 +8,7 @@
 int main()
 {
     char userResponse;
-    char userChoice[32];
+    char cityName[64];
 
     load_city_list();
 
@@ -19,12 +19,8 @@ int main()
 
         show_cities_list();
 
-        if (scanf("%31s", userChoice) != 1)
-        {
-            printf("Invalid input\n");
-            continue;
-        }
-        get_city_data(userChoice);
+        get_city_choice(cityName);
+        get_city_data(cityName);
 
         printf("\nDo you want to select another city?\nEnter Y/N:\n");
         scanf(" %c", &userResponse);

@@ -1,12 +1,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "../include/list.h"
 #include "../include/cities.h"
 #include "../include/http.h"
 #include "../include/cache.h"
 #include "../include/meteo.h"
+
+void get_city_choice(char *userChoice)
+{
+    int stringLength = 0;
+
+     while (scanf("%31s", userChoice) != 1)
+     {
+        printf("Invalid input\n");
+     }
+
+     stringLength = strlen(userChoice);
+     userChoice[0] = toupper(userChoice[0]);
+     for (int i = 1; i < stringLength; i++)
+     {
+        userChoice[i] = tolower(userChoice[i]);
+     }
+}
 
 int get_city_data(const char *choice)
 {
