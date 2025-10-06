@@ -4,10 +4,12 @@
 #include <errno.h>
 #include <sys/stat.h>
 #include <time.h>
+#include <dirent.h> // Set compiler path as C:/msys64/ucrt64/bin/gcc.exe on windows
 
 #include "../include/cities.h"
 #include "../include/cache.h"
 #include "../include/cJSON.h"
+#include "../include/list.h"
 
 // Macro to make mkdir work on Windows and Linux
 #ifdef _WIN32
@@ -18,20 +20,45 @@
 #define MKDIR(path) mkdir(path, 0777)
 #endif
 
-int saveDataHeap(char *httpData, int index)
+int check_existing(cityList *city)
 {
-    cities[index - 1].content = malloc(strlen(httpData) + 1);
-    if (cities[index - 1].content == NULL)
+    DIR *dir = opendir("data");
+    if (dir == NULL)
     {
-        return 1;
+        return -1;
     }
-    strcpy(cities[index - 1].content, httpData);
 
-    cities[index - 1].savedOrNot = true;
-    return 0;
+    char target_filename[100];
+    sprintf(target_filename, "%s_%.4f_%.4f.json", city->name, city->latitude, city->longitude);
+
+    char full_path[200];
+    sprintf(full_path, "data/%s", target_filename);
+
+    // Loop through all files in the directory
+    struct dirent *entry;
+    while ((entry = readdir(dir)) != NULL)
+    {
+        if (strcmp(entry->d_name, target_filename) == 0)
+        {
+            closedir(dir);
+            if (check_data_age(full_path) == OUT_OF_DATE)
+            {
+                printf("File exists but is outdated\n");
+                return 0; // File exists but is outdated
+            }
+            else if (check_data_age(full_path) == UP_TO_DATE)
+            {
+                printf("File exists and is up to date. No action needed\n");
+                return -2; // File exists
+            }
+        }
+    }
+    closedir(dir);
+    printf("File does not exist, creating new one...\n");
+    return 0; // File does not exist
 }
 
-int saveData(char *httpData, int index)
+int save_data(cityList *city, char *httpData)
 {
     FILE *fptr = NULL;
     char filename[100];
@@ -41,22 +68,15 @@ int saveData(char *httpData, int index)
     char *httpData_json = cJSON_Print(json_obj); // Put parsed JSON data into a string
 
     // Create folder called "data"
-    if (MKDIR("data") != OK)
+    if (MKDIR("data") != 0 && errno != EEXIST)
     {
-        if (errno == EEXIST)
-        {
-            // Directory exists, this is OK
-        }
-        else
-        {
-            perror("Failed to create directory");
-            result = ERROR;
-            goto cleanup;
-        }
+        perror("Failed to create directory");
+        result = ERROR;
+        goto cleanup;
     }
 
     // Set file name
-    sprintf(filename, "data/%s_%.4f_%.4f.json", cities[index - 1].name, cities[index - 1].latitude, cities[index - 1].longitude);
+    sprintf(filename, "data/%s_%.4f_%.4f.json", city->name, city->latitude, city->longitude);
 
     int fileStatusResult = check_data_age(filename);
     if (fileStatusResult == OUT_OF_DATE || fileStatusResult == DOES_NOT_EXIST)
@@ -84,7 +104,7 @@ int saveData(char *httpData, int index)
             }
             fptr = NULL;
         }
-        result = OUT_OF_DATE; // No new file needed
+        result = 0; // Success
         goto cleanup;
     }
 
@@ -106,14 +126,10 @@ int check_data_age(const char *filename)
     {
         if (errno == ENOENT) // errno checks if error is because file doesn't exist
         {
-            printf("File does not exist, creating new one... \n");
             return DOES_NOT_EXIST;
         }
         else
-        {
-            perror("Failed to get file status");
             return ERROR;
-        }
     }
 
     time_t mod_time = fileStatus.st_mtime;
@@ -121,12 +137,8 @@ int check_data_age(const char *filename)
 
     if ((current_time - mod_time) > 900) // Checks if file is older than 15 minutes
     {
-        printf("File is older than 15 minutes, creating new one... \n");
         return OUT_OF_DATE;
     }
     else
-    {
-        printf("File is up to date. No new file needed. \n");
         return UP_TO_DATE;
-    }
 }
