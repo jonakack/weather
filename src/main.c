@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <locale.h>
-
+#include "../include/libs/utils.h"
 #include "../include/cities.h"
 #include "../include/list.h"
 
@@ -14,22 +14,22 @@ int main()
     // Set locale for proper UTF-8 handling
     setlocale(LC_ALL, "");
 
-    load_city_list();
+    List_InitCities();
 
     do
     {
         printf("-----------------WeatherApp-----------------\n"
                "Select a city by entering the city's name: \n");
+        
+        List_ShowCities();
 
-        show_cities_list();
-
-        get_city_choice(cityName);
-        get_city_data(cityName);
+        Cities_GetChoice(cityName);
+        Cities_GetData(cityName);
 
         printf("\nDo you want to select another city?\nEnter Y/N:\n");
         scanf(" %c", &userResponse);
 
-    } while (ask_yes_or_no(userResponse) == YES);
+    } while (Input_YesNo(userResponse) == YES);
 
     printf("Shutting down... Thank you for using WeatherApp!\n");
 

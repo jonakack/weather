@@ -8,7 +8,7 @@
 
 #include "../include/cities.h"
 #include "../include/cache.h"
-#include "../include/cJSON.h"
+#include "../include/libs/cJSON.h"
 #include "../include/list.h"
 
 // Macro to make mkdir work on Windows and Linux
@@ -20,7 +20,7 @@
 #define MKDIR(path) mkdir(path, 0777)
 #endif
 
-int check_existing(cityList *city)
+int Cache_CheckExisting(cityList *city)
 {
     DIR *dir = opendir("data");
     if (dir == NULL)
@@ -41,12 +41,12 @@ int check_existing(cityList *city)
         if (strcmp(entry->d_name, target_filename) == 0)
         {
             closedir(dir);
-            if (check_data_age(full_path) == OUT_OF_DATE)
+            if (Cache_CheckDataAge(full_path) == OUT_OF_DATE)
             {
                 printf("File exists but is outdated\n");
                 return 0; // File exists but is outdated
             }
-            else if (check_data_age(full_path) == UP_TO_DATE)
+            else if (Cache_CheckDataAge(full_path) == UP_TO_DATE)
             {
                 printf("File exists and is up to date. No action needed\n");
                 return -2; // File exists
@@ -58,7 +58,7 @@ int check_existing(cityList *city)
     return 0; // File does not exist
 }
 
-int save_data(cityList *city, char *httpData)
+int Cache_SaveData(cityList *city, char *httpData)
 {
     FILE *fptr = NULL;
     char filename[100];
@@ -78,7 +78,7 @@ int save_data(cityList *city, char *httpData)
     // Set file name
     sprintf(filename, "data/%s_%.4f_%.4f.json", city->name, city->latitude, city->longitude);
 
-    int fileStatusResult = check_data_age(filename);
+    int fileStatusResult = Cache_CheckDataAge(filename);
     if (fileStatusResult == OUT_OF_DATE || fileStatusResult == DOES_NOT_EXIST)
     {
         // Create file in data folder
@@ -118,7 +118,7 @@ cleanup:
     return result;
 }
 
-int check_data_age(const char *filename)
+int Cache_CheckDataAge(const char *filename)
 {
     struct stat fileStatus;
 
@@ -141,4 +141,9 @@ int check_data_age(const char *filename)
     }
     else
         return UP_TO_DATE;
+}
+
+int Cache_CheckDataTime()
+{
+    
 }

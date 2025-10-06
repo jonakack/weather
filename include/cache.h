@@ -9,9 +9,8 @@
 #define OUT_OF_DATE -1
 #define DOES_NOT_EXIST -2
 
-int check_existing(cityList *city);
-int save_data(cityList *city, char *httpData);
-int check_data_age(const char *filename);
-int save_data_heap(char *httpData, int index);
+int Cache_CheckExisting(cityList *city);
+int Cache_SaveData(cityList *city, char *httpData);
+int Cache_CheckDataAge(const char *filename);
 
 #endif // CACHE_H

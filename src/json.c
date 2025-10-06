@@ -2,11 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../include/cJSON.h"
+#include "../include/libs/cJSON.h"
 #include "../include/json.h"
 #include "../include/meteo.h"
 
-WeatherData *parse_weather_json(const char *json)
+JSON_WeatherData *JSON_ParseData(const char *json)
 {
     cJSON *root = cJSON_Parse(json);
     if (root == NULL)
@@ -22,7 +22,7 @@ WeatherData *parse_weather_json(const char *json)
         return NULL;
     }
 
-    WeatherData *data = malloc(sizeof(WeatherData));
+    JSON_WeatherData *data = malloc(sizeof(JSON_WeatherData));
     if (data == NULL)
     {
         cJSON_Delete(root);
@@ -51,7 +51,7 @@ WeatherData *parse_weather_json(const char *json)
     return data;
 }
 
-void free_weather_data(WeatherData *data)
+void JSON_FreeWeatherData(JSON_WeatherData *data)
 {
     if (data)
     {
@@ -60,7 +60,7 @@ void free_weather_data(WeatherData *data)
     }
 }
 
-void display_weather_menu(WeatherData *data, char *cityName)
+void JSON_PrintWeatherData(JSON_WeatherData *data, char *cityName)
 {
     printf("\n========= Weather in %s =========\n", cityName);
 
@@ -82,7 +82,7 @@ void display_weather_menu(WeatherData *data, char *cityName)
     if (data->has_weathercode)
     {
         char weather_desc[100];
-        meteoWeatherCodes(data->weathercode, weather_desc);
+        Meteo_ShowWeatherCode(data->weathercode, weather_desc);
         printf("# Weather Conditions: %s\n", weather_desc);
     }
 
@@ -92,4 +92,9 @@ void display_weather_menu(WeatherData *data, char *cityName)
     }
 
     printf("=====================================\n\n");
+}
+
+int currenttime()
+{
+    
 }

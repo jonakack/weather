@@ -12,11 +12,11 @@ typedef struct {
     int has_weathercode;
     int has_winddirection;
     int has_time;
-} WeatherData;
+} JSON_WeatherData;
 
-WeatherData* parse_weather_json(const char *json);
+JSON_WeatherData* JSON_ParseData(const char *json);
 
-void display_weather_menu(WeatherData *data, char *cityName);
-void free_weather_data(WeatherData *data);
+void JSON_PrintWeatherData(JSON_WeatherData *data, char *cityName);
+void JSON_FreeWeatherData(JSON_WeatherData *data);
 
 #endif
