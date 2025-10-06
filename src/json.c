@@ -94,7 +94,3 @@ void JSON_PrintWeatherData(JSON_WeatherData *data, char *cityName)
     printf("=====================================\n\n");
 }
 
-int currenttime()
-{
-    
-}

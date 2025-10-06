@@ -142,8 +142,3 @@ int Cache_CheckDataAge(const char *filename)
     else
         return UP_TO_DATE;
 }
-
-int Cache_CheckDataTime()
-{
-    
-}
