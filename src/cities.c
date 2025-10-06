@@ -19,19 +19,37 @@ static int utf8_swedish_to_upper(const char *src, char *dst)
             dst[0] = 0xc3;
             dst[1] = 0x85;
             return 2;
-        } // Å
+        } // å -> Å
         if ((unsigned char)src[1] == 0xa4)
         {
             dst[0] = 0xc3;
             dst[1] = 0x84;
             return 2;
-        } // Ä
+        } // ä -> Ä
         if ((unsigned char)src[1] == 0xb6)
         {
             dst[0] = 0xc3;
             dst[1] = 0x96;
             return 2;
-        } // Ö
+        } // ö -> Ö
+        if ((unsigned char)src[1] == 0x85)
+        {
+            dst[0] = 0xc3;
+            dst[1] = 0x85;
+            return 2;
+        } // Å (already uppercase)
+        if ((unsigned char)src[1] == 0x84)
+        {
+            dst[0] = 0xc3;
+            dst[1] = 0x84;
+            return 2;
+        } // Ä (already uppercase)
+        if ((unsigned char)src[1] == 0x96)
+        {
+            dst[0] = 0xc3;
+            dst[1] = 0x96;
+            return 2;
+        } // Ö (already uppercase)
     }
     // ASCII
     dst[0] = toupper((unsigned char)src[0]);
@@ -48,19 +66,37 @@ static int utf8_swedish_to_lower(const char *src, char *dst)
             dst[0] = 0xc3;
             dst[1] = 0xa5;
             return 2;
-        } // å
+        } // Å -> å
         if ((unsigned char)src[1] == 0x84)
         {
             dst[0] = 0xc3;
             dst[1] = 0xa4;
             return 2;
-        } // ä
+        } // Ä -> ä
         if ((unsigned char)src[1] == 0x96)
         {
             dst[0] = 0xc3;
             dst[1] = 0xb6;
             return 2;
-        } // ö
+        } // Ö -> ö
+        if ((unsigned char)src[1] == 0xa5)
+        {
+            dst[0] = 0xc3;
+            dst[1] = 0xa5;
+            return 2;
+        } // å (already lowercase)
+        if ((unsigned char)src[1] == 0xa4)
+        {
+            dst[0] = 0xc3;
+            dst[1] = 0xa4;
+            return 2;
+        } // ä (already lowercase)
+        if ((unsigned char)src[1] == 0xb6)
+        {
+            dst[0] = 0xc3;
+            dst[1] = 0xb6;
+            return 2;
+        } // ö (already lowercase)
     }
     dst[0] = tolower((unsigned char)src[0]);
     return 1;
@@ -73,7 +109,19 @@ void get_city_choice(char *userChoice)
     while (scanf("%63s", input) != 1)
     {
         printf("Invalid input\n");
+        // Clear input buffer
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF) {
+            // discard characters
+        }
     }
+    
+    // Clear remaining input buffer after successful scanf
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) {
+        // discard characters
+    }
+    
     len = strlen(input);
     int i = 0, j = 0;
     // Uppercase first character (ASCII or UTF-8 Swedish)
