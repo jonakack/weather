@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <locale.h>
 
 #include "../include/cities.h"
 #include "../include/list.h"
@@ -9,6 +10,9 @@ int main()
 {
     char userResponse;
     char cityName[64];
+
+    // Set locale for proper UTF-8 handling
+    setlocale(LC_ALL, "");
 
     load_city_list();
 
