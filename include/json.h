@@ -14,9 +14,9 @@ typedef struct {
     int has_time;
 } JSON_WeatherData;
 
-JSON_WeatherData* JSON_ParseData(const char *json);
+JSON_WeatherData* JSON_ParseData(const char *_Json);
 
-void JSON_PrintWeatherData(JSON_WeatherData *data, char *cityName);
-void JSON_FreeWeatherData(JSON_WeatherData *data);
+void JSON_PrintWeatherData(JSON_WeatherData *_Data, char *_CityName);
+void JSON_FreeWeatherData(JSON_WeatherData *_Data);
 
 #endif

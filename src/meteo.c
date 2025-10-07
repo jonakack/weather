@@ -6,7 +6,7 @@
 #include "../include/meteo.h"
 #include "../include/cache.h"
 
-char *Meteo_MakeURL(double latitude, double longitude)
+char *Meteo_MakeURL(double _Latitude, double _Longitude)
 {
     char *url = malloc(256);
     if (url == NULL)
@@ -14,12 +14,12 @@ char *Meteo_MakeURL(double latitude, double longitude)
         return NULL;
     }
     sprintf(url, "https://api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f&current_weather=true",
-            latitude,
-            longitude);
+            _Latitude,
+            _Longitude);
     return url;
 }
 
-void Meteo_ShowWeatherCode(int code, char *desc)
+void Meteo_ShowWeatherCode(int _WeatherCode, char *_Description)
 {
     static const char *weather[] = {
         [0] = "Clear sky ☀️",
@@ -51,12 +51,12 @@ void Meteo_ShowWeatherCode(int code, char *desc)
         [96] = "Thunderstorm with slight hail ⛈️",
         [99] = "Thunderstorm with heavy hail ⛈️"};
 
-    if (code >= 0 && code < 100 && weather[code] != NULL)
+    if (_WeatherCode >= 0 && _WeatherCode < 100 && weather[_WeatherCode] != NULL)
     {
-        sprintf(desc, "%s", weather[code]);
+        sprintf(_Description, "%s", weather[_WeatherCode]);
     }
     else
     {
-        sprintf(desc, "Unknown weather code (%d)", code);
+        sprintf(_Description, "Unknown weather code (%d)", _WeatherCode);
     }
 }

@@ -20,7 +20,7 @@
 #define MKDIR(path) mkdir(path, 0777)
 #endif
 
-int Cache_CheckExisting(cityList *city)
+int Cache_CheckExisting(cityList *_City)
 {
     DIR *dir = opendir("data");
     if (dir == NULL)
@@ -29,7 +29,7 @@ int Cache_CheckExisting(cityList *city)
     }
 
     char target_filename[100];
-    sprintf(target_filename, "%s_%.4f_%.4f.json", city->name, city->latitude, city->longitude);
+    sprintf(target_filename, "%s_%.4f_%.4f.json", _City->name, _City->latitude, _City->longitude);
 
     char full_path[200];
     sprintf(full_path, "data/%s", target_filename);
@@ -58,13 +58,13 @@ int Cache_CheckExisting(cityList *city)
     return 0; // File does not exist
 }
 
-int Cache_SaveData(cityList *city, char *httpData)
+int Cache_SaveData(cityList *_City, char *_HttpData)
 {
     FILE *fptr = NULL;
     char filename[100];
     int result = -3;
 
-    cJSON *json_obj = cJSON_Parse(httpData);     // Parse data
+    cJSON *json_obj = cJSON_Parse(_HttpData);     // Parse data
     char *httpData_json = cJSON_Print(json_obj); // Put parsed JSON data into a string
 
     // Create folder called "data"
@@ -76,7 +76,7 @@ int Cache_SaveData(cityList *city, char *httpData)
     }
 
     // Set file name
-    sprintf(filename, "data/%s_%.4f_%.4f.json", city->name, city->latitude, city->longitude);
+    sprintf(filename, "data/%s_%.4f_%.4f.json", _City->name, _City->latitude, _City->longitude);
 
     int fileStatusResult = Cache_CheckDataAge(filename);
     if (fileStatusResult == OUT_OF_DATE || fileStatusResult == DOES_NOT_EXIST)
@@ -118,11 +118,11 @@ cleanup:
     return result;
 }
 
-int Cache_CheckDataAge(const char *filename)
+int Cache_CheckDataAge(const char *_Filename)
 {
     struct stat fileStatus;
 
-    if (stat(filename, &fileStatus) != OK)
+    if (stat(_Filename, &fileStatus) != OK)
     {
         if (errno == ENOENT) // errno checks if error is because file doesn't exist
         {

@@ -35,7 +35,7 @@ size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp)
 }
 
 // This function fetches data from URL and returns it as a string
-char *HTTP_Init(const char *url)
+char *HTTP_Init(const char *_Url)
 {
     CURL *curl = curl_easy_init();
     if (!curl)
@@ -43,7 +43,7 @@ char *HTTP_Init(const char *url)
 
     struct Memory chunk = {0};
 
-    curl_easy_setopt(curl, CURLOPT_URL, url);
+    curl_easy_setopt(curl, CURLOPT_URL, _Url);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
 
@@ -58,10 +58,10 @@ char *HTTP_Init(const char *url)
     return chunk.data; // caller must free
 }
 
-int HTTP_DownloadData(cityList *city)
+int HTTP_DownloadData(cityList *_City)
 {
     printf("Creating URL...\n");
-    char *url = Meteo_MakeURL(city->latitude, city->longitude);
+    char *url = Meteo_MakeURL(_City->latitude, _City->longitude);
     if (url == NULL)
     {
         return -1;
@@ -76,8 +76,8 @@ int HTTP_DownloadData(cityList *city)
         return -1;
     }
 
-    printf("Parsing and saving data in %s's file...\n", city->name);
-    Cache_SaveData(city, httpData);
+    printf("Parsing and saving data in %s's file...\n", _City->name);
+    Cache_SaveData(_City, httpData);
 
     free(url);
     free(httpData);
