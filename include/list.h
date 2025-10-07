@@ -21,11 +21,11 @@ typedef struct cityList
 
 
 void List_InitCities();
-void List_CreateCity(char *name, char *lat, char *lon);
-void List_RemoveCityFromList(cityList **head, char* name);
+void List_CreateCity(char *_Name, char *_Lat, char *_Lon);
+void List_RemoveCityFromList(cityList **_Head, char* _Name);
 void List_ShowCities();
-int List_AddCityToList(cityList *city);
-cityList *List_SearchList(char *cityName);
+int List_AddCityToList(cityList *_City);
+cityList *List_SearchList(char *_CityName);
 cityList *List_InitCity();
 
 #endif // LIST_H

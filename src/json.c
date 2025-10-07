@@ -6,9 +6,9 @@
 #include "../include/json.h"
 #include "../include/meteo.h"
 
-JSON_WeatherData *JSON_ParseData(const char *json)
+JSON_WeatherData *JSON_ParseData(const char *_Json)
 {
-    cJSON *root = cJSON_Parse(json);
+    cJSON *root = cJSON_Parse(_Json);
     if (root == NULL)
     {
         fprintf(stderr, "JSON parse error\n");
@@ -51,44 +51,44 @@ JSON_WeatherData *JSON_ParseData(const char *json)
     return data;
 }
 
-void JSON_FreeWeatherData(JSON_WeatherData *data)
+void JSON_FreeWeatherData(JSON_WeatherData *_Data)
 {
-    if (data)
+    if (_Data)
     {
-        free(data->time);
-        free(data);
+        free(_Data->time);
+        free(_Data);
     }
 }
 
-void JSON_PrintWeatherData(JSON_WeatherData *data, char *cityName)
+void JSON_PrintWeatherData(JSON_WeatherData *_Data, char *_CityName)
 {
-    printf("\n========= Weather in %s =========\n", cityName);
+    printf("\n========= Weather in %s =========\n", _CityName);
 
-    if (data->has_temperature)
+    if (_Data->has_temperature)
     {
-        printf("# Temperature: %.1f °C\n", data->temperature);
+        printf("# Temperature: %.1f °C\n", _Data->temperature);
     }
 
-    if (data->has_windspeed)
+    if (_Data->has_windspeed)
     {
-        printf("# Wind Speed: %.1f m/s\n", data->windspeed);
+        printf("# Wind Speed: %.1f m/s\n", _Data->windspeed);
     }
 
-    if (data->has_winddirection)
+    if (_Data->has_winddirection)
     {
-        printf("# Wind Direction: %d°\n", data->winddirection);
+        printf("# Wind Direction: %d°\n", _Data->winddirection);
     }
 
-    if (data->has_weathercode)
+    if (_Data->has_weathercode)
     {
         char weather_desc[100];
-        Meteo_ShowWeatherCode(data->weathercode, weather_desc);
+        Meteo_ShowWeatherCode(_Data->weathercode, weather_desc);
         printf("# Weather Conditions: %s\n", weather_desc);
     }
 
-    if (data->has_time)
+    if (_Data->has_time)
     {
-        printf("# Time: %s\n", data->time);
+        printf("# Time: %s\n", _Data->time);
     }
 
     printf("=====================================\n\n");

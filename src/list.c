@@ -105,7 +105,7 @@ cityList *List_InitCity()
 }
 
 // Fills empty city struct with name and coordinates
-void List_CreateCity(char *name, char *lat, char *lon)
+void List_CreateCity(char *_Name, char *_Lat, char *_Lon)
 {
     cityList *new_city = List_InitCity();
     if (new_city == NULL)
@@ -114,13 +114,13 @@ void List_CreateCity(char *name, char *lat, char *lon)
         return;
     }
 
-    new_city->name = strdup(name);
-    new_city->latitude = atof(lat);
-    new_city->longitude = atof(lon);
+    new_city->name = strdup(_Name);
+    new_city->latitude = atof(_Lat);
+    new_city->longitude = atof(_Lon);
 
     // Create filename
     char filename[200];
-    sprintf(filename, "data/%s_%.4f_%.4f.json", name, atof(lat), atof(lon));
+    sprintf(filename, "data/%s_%.4f_%.4f.json", _Name, atof(_Lat), atof(_Lon));
     new_city->filename = strdup(filename);
 
     // Check for allocation failures
@@ -139,27 +139,27 @@ void List_CreateCity(char *name, char *lat, char *lon)
     List_AddCityToList(new_city);
 }
 
-int List_AddCityToList(cityList *city)
+int List_AddCityToList(cityList *_City)
 {
     if (head == NULL)
     {
-        head = city;
+        head = _City;
     }
     else
     {
-        city->next = head;
-        head->prev = city;
-        head = city;
+        _City->next = head;
+        head->prev = _City;
+        head = _City;
     }
     return 0;
 }
 
-void List_RemoveCityFromList(cityList **head, char *name)
+void List_RemoveCityFromList(cityList **_Head, char *_Name)
 {
-    cityList *current = *head;
+    cityList *current = *_Head;
     while (current != NULL)
     {
-        if (strcmp(current->name, name) == 0)
+        if (strcmp(current->name, _Name) == 0)
         { /* Break loop if they match */
             if (current->prev != NULL)
             {
@@ -168,7 +168,7 @@ void List_RemoveCityFromList(cityList **head, char *name)
             else
             {
                 // Removing head node
-                *head = current->next;
+                *_Head = current->next;
             }
             if (current->next != NULL)
             {
@@ -177,7 +177,7 @@ void List_RemoveCityFromList(cityList **head, char *name)
             free(current->name);
             free(current->filename);
             free(current);
-            printf("Removed %s\n", name);
+            printf("Removed %s\n", _Name);
             break;
         }
         else
@@ -200,12 +200,12 @@ void List_ShowCities()
     current = head; /* Resets *current to starting position */
 }
 
-cityList *List_SearchList(char *target)
+cityList *List_SearchList(char *_CityName)
 {
     cityList *current = head;
     while (current != NULL)
     {
-        if ((strcmp(target, current->name)) == 0)
+        if ((strcmp(_CityName, current->name)) == 0)
         {
             return current;
         }

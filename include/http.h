@@ -3,7 +3,7 @@
 
 #include "list.h"
 
-char* HTTP_Init(const char* url);
-int HTTP_DownloadData(cityList *city);
+char* HTTP_Init(const char* _Url);
+int HTTP_DownloadData(cityList *_City);
 
 #endif // HTTP_H

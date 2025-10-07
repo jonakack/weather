@@ -11,7 +11,7 @@
 #include "../include/libs/utils.h"
 
 // Fetches city from user input, sets first character to uppercase and the rest to lowercase
-void Cities_GetChoice(char *userChoice)
+void Cities_GetChoice(char *_UserChoice)
 {
     char input[64];
     int len = 0;
@@ -38,32 +38,32 @@ void Cities_GetChoice(char *userChoice)
     // Uppercase first character (ASCII or UTF-8 Swedish)
     if ((unsigned char)input[i] == 0xc3 && i + 1 < len)
     {
-        j += UTF8_SwedishToUpper(&input[i], &userChoice[j]);
+        j += UTF8_SwedishToUpper(&input[i], &_UserChoice[j]);
         i += 2;
     }
     else
     {
-        userChoice[j++] = toupper((unsigned char)input[i++]);
+        _UserChoice[j++] = toupper((unsigned char)input[i++]);
     }
     // Lowercase the rest (ASCII or UTF-8 Swedish)
     while (i < len)
     {
         if ((unsigned char)input[i] == 0xc3 && i + 1 < len)
         {
-            j += UTF8_SwedishToLower(&input[i], &userChoice[j]);
+            j += UTF8_SwedishToLower(&input[i], &_UserChoice[j]);
             i += 2;
         }
         else
         {
-            userChoice[j++] = tolower((unsigned char)input[i++]);
+            _UserChoice[j++] = tolower((unsigned char)input[i++]);
         }
     }
-    userChoice[j] = '\0';
+    _UserChoice[j] = '\0';
 }
 // Looks for a local file, if not found or too old: fetches data from url
-int Cities_GetData(const char *choice)
+int Cities_GetData(const char *_Choice)
 {
-    cityList *chosenCity = List_SearchList((char *)choice); // Returns a pointer to the city if it is found
+    cityList *chosenCity = List_SearchList((char *)_Choice); // Returns a pointer to the city if it is found
     if (chosenCity == NULL)
     {
         printf("City not found.\n");
@@ -82,9 +82,9 @@ int Cities_GetData(const char *choice)
     return 0;
 }
 // Displays selected city's values via user input
-int Cities_DisplayData(char *filename, char *cityName)
+int Cities_DisplayData(char *_Filename, char *_CityName)
 {
-    FILE *file = fopen(filename, "r");
+    FILE *file = fopen(_Filename, "r");
     if (file == NULL)
     {
         perror("Failed to open file");
@@ -111,7 +111,7 @@ int Cities_DisplayData(char *filename, char *cityName)
     JSON_WeatherData *weather_data = JSON_ParseData(httpData);
     if (weather_data != NULL)
     {
-        JSON_PrintWeatherData(weather_data, cityName);
+        JSON_PrintWeatherData(weather_data, _CityName);
         JSON_FreeWeatherData(weather_data);
     }
 
