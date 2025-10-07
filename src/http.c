@@ -1,3 +1,7 @@
+#include "../include/http.h"
+#include "../include/list.h"
+#include "../include/meteo.h"
+
 #include <curl/curl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,7 +35,7 @@ size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp)
 }
 
 // This function fetches data from URL and returns it as a string
-char *http_init(const char *url)
+char *HTTP_Init(const char *url)
 {
     CURL *curl = curl_easy_init();
     if (!curl)
@@ -52,4 +56,30 @@ char *http_init(const char *url)
 
     curl_easy_cleanup(curl);
     return chunk.data; // caller must free
+}
+
+int HTTP_DownloadData(cityList *city)
+{
+    printf("Creating URL...\n");
+    char *url = Meteo_MakeURL(city->latitude, city->longitude);
+    if (url == NULL)
+    {
+        return -1;
+    }
+    printf("Downloading HTTP data...\n");
+    char *httpData = HTTP_Init(url);
+
+    if (httpData == NULL)
+    {
+        printf("Failed to download weather data\n");
+        free(url);
+        return -1;
+    }
+
+    printf("Parsing and saving data in %s's file...\n", city->name);
+    Cache_SaveData(city, httpData);
+
+    free(url);
+    free(httpData);
+    return 0;
 }

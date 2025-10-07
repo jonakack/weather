@@ -20,13 +20,12 @@ typedef struct cityList
 
 
 
-void build_cities_list(char *stringList);
-void create_city(char *name, char *lat, char *lon);
-void remove_city_from_list(cityList **head, char* name);
-void show_cities_list();
-int load_city_list();
-int add_city_to_list(cityList *city);
-cityList *search_list(char *cityName);
-cityList *initialize_city();
+void List_InitCities();
+void List_CreateCity(char *name, char *lat, char *lon);
+void List_RemoveCityFromList(cityList **head, char* name);
+void List_ShowCities();
+int List_AddCityToList(cityList *city);
+cityList *List_SearchList(char *cityName);
+cityList *List_InitCity();
 
 #endif // LIST_H

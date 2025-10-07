@@ -2,12 +2,11 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-#include "../include/cJSON.h"
+#include "../include/libs/cJSON.h"
 #include "../include/meteo.h"
-#include "../include/list.h"
 #include "../include/cache.h"
 
-char *makeURL(double latitude, double longitude)
+char *Meteo_MakeURL(double latitude, double longitude)
 {
     char *url = malloc(256);
     if (url == NULL)
@@ -20,33 +19,7 @@ char *makeURL(double latitude, double longitude)
     return url;
 }
 
-int download_city_data(cityList *city)
-{
-    printf("Creating URL...\n");
-    char *url = makeURL(city->latitude, city->longitude);
-    if (url == NULL)
-    {
-        return -1;
-    }
-    printf("Downloading HTTP data...\n");
-    char *httpData = http_init(url);
-
-    if (httpData == NULL)
-    {
-        printf("Failed to download weather data\n");
-        free(url);
-        return -1;
-    }
-
-    printf("Parsing and saving data in %s's file...\n", city->name);
-    save_data(city, httpData);
-
-    free(url);
-    free(httpData);
-    return 0;
-}
-
-void meteoWeatherCodes(int code, char *desc)
+void Meteo_ShowWeatherCode(int code, char *desc)
 {
     static const char *weather[] = {
         [0] = "Clear sky ☀️",

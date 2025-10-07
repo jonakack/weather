@@ -5,33 +5,28 @@
 
 #include "../include/list.h"
 
-char *stringList = "Stockholm:59.3293:18.0686\n"
-                   "Göteborg:57.7089:11.9746\n"
-                   "Malmö:55.6050:13.0038\n"
-                   "Uppsala:59.8586:17.6389\n"
-                   "Västerås:59.6099:16.5448\n"
-                   "Örebro:59.2741:15.2066\n"
-                   "Linköping:58.4109:15.6216\n"
-                   "Helsingborg:56.0465:12.6945\n"
-                   "Jönköping:57.7815:14.1562\n"
-                   "Norrköping:58.5877:16.1924\n"
-                   "Lund:55.7047:13.1910\n"
-                   "Gävle:60.6749:17.1413\n"
-                   "Sundsvall:62.3908:17.3069\n"
-                   "Umeå:63.8258:20.2630\n"
-                   "Luleå:65.5848:22.1567\n"
-                   "Kiruna:67.8558:20.2253\n"
-                   "Skellefteå:64.7506:20.9528\n";
+const char *stringList = "Stockholm:59.3293:18.0686\n"
+                         "Göteborg:57.7089:11.9746\n"
+                         "Malmö:55.6050:13.0038\n"
+                         "Uppsala:59.8586:17.6389\n"
+                         "Västerås:59.6099:16.5448\n"
+                         "Örebro:59.2741:15.2066\n"
+                         "Linköping:58.4109:15.6216\n"
+                         "Helsingborg:56.0465:12.6945\n"
+                         "Jönköping:57.7815:14.1562\n"
+                         "Norrköping:58.5877:16.1924\n"
+                         "Lund:55.7047:13.1910\n"
+                         "Gävle:60.6749:17.1413\n"
+                         "Sundsvall:62.3908:17.3069\n"
+                         "Umeå:63.8258:20.2630\n"
+                         "Luleå:65.5848:22.1567\n"
+                         "Kiruna:67.8558:20.2253\n"
+                         "Skellefteå:64.7506:20.9528\n";
 
 cityList *head;
 
-int load_city_list()
-{
-    build_cities_list(stringList);
-    return 0;
-}
-
-void build_cities_list(char *stringList) // Takes a string of cities, separates them
+// Takes stringList, breaks it apart and puts cities in linked list
+void List_InitCities()
 {
     char *list_copy = strdup(stringList);
     if (list_copy == NULL)
@@ -76,7 +71,7 @@ void build_cities_list(char *stringList) // Takes a string of cities, separates 
 
                 // printf("City: <%s>, Latitude: <%s>, Longitude: <%s>\n", name, lat_str, lon_str);
 
-                create_city(name, lat_str, lon_str);
+                List_CreateCity(name, lat_str, lon_str);
 
                 name = NULL;
                 lat_str = NULL;
@@ -90,28 +85,29 @@ void build_cities_list(char *stringList) // Takes a string of cities, separates 
 
     free(list_copy);
 }
-
-cityList *initialize_city() // Creates an empty city and returns its adress
+// Creates an empty city struct and returns its address
+cityList *List_InitCity()
 {
-    cityList *initialize_city = malloc(sizeof(cityList));
-    if (initialize_city == NULL)
+    cityList *List_InitCity = malloc(sizeof(cityList));
+    if (List_InitCity == NULL)
     {
         return NULL;
     }
     // Initialize all fields to safe values
-    initialize_city->name = NULL;
-    initialize_city->latitude = 0.0;
-    initialize_city->longitude = 0.0;
-    initialize_city->filename = NULL;
-    initialize_city->next = NULL;
-    initialize_city->prev = NULL;
+    List_InitCity->name = NULL;
+    List_InitCity->latitude = 0.0;
+    List_InitCity->longitude = 0.0;
+    List_InitCity->filename = NULL;
+    List_InitCity->next = NULL;
+    List_InitCity->prev = NULL;
 
-    return initialize_city;
+    return List_InitCity;
 }
 
-void create_city(char *name, char *lat, char *lon)
+// Fills empty city struct with name and coordinates
+void List_CreateCity(char *name, char *lat, char *lon)
 {
-    cityList *new_city = initialize_city();
+    cityList *new_city = List_InitCity();
     if (new_city == NULL)
     {
         printf("Failed to allocate memory for city\n");
@@ -140,10 +136,10 @@ void create_city(char *name, char *lat, char *lon)
     new_city->next = NULL;
     new_city->prev = NULL;
 
-    add_city_to_list(new_city);
+    List_AddCityToList(new_city);
 }
 
-int add_city_to_list(cityList *city)
+int List_AddCityToList(cityList *city)
 {
     if (head == NULL)
     {
@@ -158,7 +154,7 @@ int add_city_to_list(cityList *city)
     return 0;
 }
 
-void remove_city_from_list(cityList **head, char *name)
+void List_RemoveCityFromList(cityList **head, char *name)
 {
     cityList *current = *head;
     while (current != NULL)
@@ -193,7 +189,7 @@ void remove_city_from_list(cityList **head, char *name)
     }
 }
 
-void show_cities_list()
+void List_ShowCities()
 {
     cityList *current = head;
     while (current != NULL)
@@ -204,7 +200,7 @@ void show_cities_list()
     current = head; /* Resets *current to starting position */
 }
 
-cityList *search_list(char *target)
+cityList *List_SearchList(char *target)
 {
     cityList *current = head;
     while (current != NULL)
