@@ -13,6 +13,9 @@
 // Fetches city from user input, sets first character to uppercase and the rest to lowercase
 void Cities_GetChoice(char *_UserChoice)
 {
+    /* TODO: Fix input buffer bug. Sometimes, after the Input_YesNo function,
+    the message "City not found" is shown even if the city name is correct */
+
     char input[64];
     int len = 0;
     while (scanf("%63s", input) != 1)
@@ -60,6 +63,7 @@ void Cities_GetChoice(char *_UserChoice)
     }
     _UserChoice[j] = '\0';
 }
+
 // Looks for a local file, if not found or too old: fetches data from url
 int Cities_GetData(const char *_Choice)
 {
@@ -81,7 +85,8 @@ int Cities_GetData(const char *_Choice)
 
     return 0;
 }
-// Displays selected city's values via user input
+
+// Opens file, parses content and displays it to the user
 int Cities_DisplayData(char *_Filename, char *_CityName)
 {
     FILE *file = fopen(_Filename, "r");
