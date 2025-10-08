@@ -13,7 +13,7 @@ struct Memory
     size_t size;
 };
 
-// this function is called by libcurl when data comes in
+// This function is called by libcurl when data comes in
 size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp)
 {
     size_t total = size * nmemb;
@@ -58,6 +58,7 @@ char *HTTP_Init(const char *_Url)
     return chunk.data; // caller must free
 }
 
+// This function downloads data to a chosen file
 int HTTP_DownloadData(cityList *_City)
 {
     printf("Creating URL...\n");
