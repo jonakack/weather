@@ -88,20 +88,20 @@ void List_InitCities()
 // Creates an empty city struct and returns its address
 cityList *List_InitCity()
 {
-    cityList *List_InitCity = malloc(sizeof(cityList));
-    if (List_InitCity == NULL)
+    cityList *List_NewCity = malloc(sizeof(cityList));
+    if (List_NewCity == NULL)
     {
         return NULL;
     }
     // Initialize all fields to safe values
-    List_InitCity->name = NULL;
-    List_InitCity->latitude = 0.0;
-    List_InitCity->longitude = 0.0;
-    List_InitCity->filename = NULL;
-    List_InitCity->next = NULL;
-    List_InitCity->prev = NULL;
+    List_NewCity->name = NULL;
+    List_NewCity->latitude = 0.0;
+    List_NewCity->longitude = 0.0;
+    List_NewCity->filename = NULL;
+    List_NewCity->next = NULL;
+    List_NewCity->prev = NULL;
 
-    return List_InitCity;
+    return List_NewCity;
 }
 
 // Fills empty city struct with name and coordinates
