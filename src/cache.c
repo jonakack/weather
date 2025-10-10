@@ -205,14 +205,14 @@ int Cache_CheckDataTime(char *_Filename)
     }
     
     char *time_jsonString = json_time->valuestring;
-    printf("%s\n", time_jsonString);
+    printf("File's API time: %s\n", time_jsonString);
     // time_jsonString now contains time in the file in YYYY-MM-DDTHH:MM format
 
     char buffer[20];
     time_t current_time = time(NULL);
     struct tm *gmt = gmtime(&current_time);
     strftime(buffer, sizeof(buffer), "%Y-%m-%dT%H:%M", gmt);
-    printf("%s\n", buffer);
+    printf("Current time: %s\n", buffer);
     // Buffer now contains current GMT time in YYYY-MM-DDTHH:MM format
 
     // Compare with current time and date
