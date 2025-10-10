@@ -148,8 +148,8 @@ int Cache_CheckDataAge(char *_Filename)
     return UP_TO_DATE;
 }
 
-// This function checks the time inside of a JSON file. Needs full path. 
-// Returns -1 if outdated, 0 if up to date
+/*  This function checks the API time inside of a JSON file. Needs full path. 
+    Returns -1 if outdated, 0 if up to date */
 int Cache_CheckDataTime(char *_Filename)
 {
     FILE *fptr;
@@ -226,12 +226,12 @@ int Cache_CheckDataTime(char *_Filename)
                             &file.tm_hour, 
                             &file.tm_min);
 
-    sscanf(buffer, "%d-%d-%dT%d:%d", 
-                    &current.tm_year, 
-                    &current.tm_mon, 
-                    &current.tm_mday, 
-                    &current.tm_hour, 
-                    &current.tm_min);
+    sscanf(buffer,          "%d-%d-%dT%d:%d", 
+                            &current.tm_year, 
+                            &current.tm_mon, 
+                            &current.tm_mday, 
+                            &current.tm_hour, 
+                            &current.tm_min);
 
     file.tm_year -= 1900;
     file.tm_mon -= 1;
