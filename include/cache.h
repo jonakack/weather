@@ -11,6 +11,7 @@
 
 int Cache_CheckExisting(cityList *_City);
 int Cache_SaveData(cityList *_City, char *_HttpData);
-int Cache_CheckDataAge(const char *_Filename);
+int Cache_CheckDataAge(char *_Filename);
+int Cache_CheckDataTime(char *_Filename);
 
 #endif // CACHE_H

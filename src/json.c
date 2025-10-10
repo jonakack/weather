@@ -93,4 +93,3 @@ void JSON_PrintWeatherData(JSON_WeatherData *_Data, char *_CityName)
 
     printf("=====================================\n\n");
 }
-

@@ -78,6 +78,7 @@ int Cities_GetData(const char *_Choice)
     int check_result = Cache_CheckExisting(chosenCity);
     if (check_result == 0 || check_result == -1)
     {
+        printf("Creating new file...\n");
         HTTP_DownloadData(chosenCity);
     }
 
